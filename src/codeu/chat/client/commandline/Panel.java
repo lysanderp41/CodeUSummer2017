@@ -27,7 +27,7 @@ import java.util.Scanner;
 final class Panel {
 
   public interface Command {
-    void invoke(List<String> args);
+    void invoke(Scanner line);
   }
 
   private final Map<String, Command> commands = new HashMap<>();
@@ -48,10 +48,10 @@ final class Panel {
   // will be returned. True will be return if a command is found. Whether or not
   // the command was successful is not returned.
   //
-  public boolean handleCommand(String commandName, List<String> args) {
+  public boolean handleCommand(String commandName, Scanner line) {
     final Command command = commands.get(commandName);
     if (command != null) {
-      command.invoke(args);
+      command.invoke(line);
     }
     return command != null;
   }
