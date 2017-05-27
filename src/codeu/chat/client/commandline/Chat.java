@@ -110,6 +110,8 @@ public final class Chat {
         System.out.println("    Add a new user with the given name.");
         System.out.println("  u-sign-in <name>");
         System.out.println("    Sign in as the user with the given name.");
+        System.out.println("  uptime");
+        System.out.println("    Display the amount of time the server has been running.");
         System.out.println("  exit");
         System.out.println("    Exit the program.");
       }
@@ -237,8 +239,7 @@ public final class Chat {
         System.out.println("    Go back to ROOT MODE.");
         System.out.println("  exit");
         System.out.println("    Exit the program.");
-        System.out.println("  uptime");
-        System.out.println("    Display the amount of time the server has been running.");
+
       }
     });
 
