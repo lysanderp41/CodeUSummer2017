@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import codeu.chat.common.ServerInfo;
 import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.ConversationPayload;
 import codeu.chat.common.LinearUuidGenerator;
@@ -63,6 +64,9 @@ public final class Server {
 
   private final Relay relay;
   private Uuid lastSeen = Uuid.NULL;
+
+  //creates instance of server's information
+  private static final ServerInfo info = new ServerInfo();
 
   public Server(final Uuid id, final Secret secret, final Relay relay) {
 
@@ -170,6 +174,16 @@ public final class Server {
         Serializers.INTEGER.write(out, NetworkCode.GET_MESSAGES_BY_ID_RESPONSE);
         Serializers.collection(Message.SERIALIZER).write(out, messages);
       }
+    });
+
+    //Gets the Server 
+    this.commands.put(NetworkCode.SERVER_INFO_REQUEST, new Command(){
+      @Override
+      public void onMessage(InputStream in, OutputStream out) throws IOException{
+        Serializers.INTEGER.write(out,NetworkCode.SERVER_INFO_RESPONSE);
+        Uuid.SERIALIZER.write(out,info.version);
+      }
+      
     });
 
     this.timeline.scheduleNow(new Runnable() {

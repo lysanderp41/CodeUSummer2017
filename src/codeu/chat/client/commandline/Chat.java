@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Stack;
 
+import codeu.chat.common.ServerInfo;
 import codeu.chat.client.core.Context;
 import codeu.chat.client.core.ConversationContext;
 import codeu.chat.client.core.MessageContext;
@@ -108,6 +109,8 @@ public final class Chat {
         System.out.println("  u-sign-in <name>");
         System.out.println("    Sign in as the user with the given name.");
         System.out.println("  exit");
+        System.out.println("  version check");
+        System.out.println("  Display the version of the server.");
         System.out.println("    Exit the program.");
       }
     });
@@ -181,6 +184,19 @@ public final class Chat {
       }
     });
 
+    // Version Check 
+    // adds a new command "info" and will display the version it is in 
+    panel.register("info", new Panel.Command() {
+      @Override
+      public void invoke(Scanner args){
+        final ServerInfo info = context.getInfo();
+        if (info == null){
+          System.out.println("ERROR, server did not send valid info");
+        }else{
+          System.out.println(info.version);
+        }
+      }
+    });
     // Now that the panel has all its commands registered, return the panel
     // so that it can be used.
     return panel;

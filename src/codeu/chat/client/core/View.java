@@ -17,6 +17,7 @@ package codeu.chat.client.core;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import codeu.chat.common.ServerInfo;
 import codeu.chat.common.BasicView;
 import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.ConversationPayload;
@@ -136,4 +137,22 @@ final class View implements BasicView {
 
     return messages;
   }
+  //get the info object from the server 
+  public ServerInfo getInfo(){
+    try(final Connection connection = this.source.connect()){
+      Serializers.INTEGER.write(connection.out(),NetworkCode.SERVER_INFO_REQUEST);
+      if (Serializers.INTEGER.read(connection.in())== NetworkCode.SERVER_INFO_RESPONSE){
+        final Uuid version = Uuid.SERIALIZER.read(connection.in());
+        return new ServerInfo(version);
+      }else{
+        LOG.error("ERROR, server did not respond with proper response");
+        System.out.println("ERROR, server did not respons with proper response");
+      }
+    }catch(Exception ex){
+      LOG.error(ex,"ERROR, something went wrong with the connection");
+      System.out.println("ERROR, something went wrong with the connection");
+    }
+    return null;
+  }
+  
 }
