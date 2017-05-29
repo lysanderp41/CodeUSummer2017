@@ -6,13 +6,14 @@ import codeu.chat.util.Uuid;
 public final class ServerInfo {
 	private final static String SERVER_VERSION = "1.0.0";
 
-	public final Uuid version;
+	public Uuid version;
 	public ServerInfo(){
+		this.version = null;
 		try {
-			 Uuid.parse(SERVER_VERSION);
 			 this.version = Uuid.parse(SERVER_VERSION);
 			 return;
-		}catch(Exception e){
+		}
+		catch(Exception e){
 			this.version = null;
 		}
 		
