@@ -126,8 +126,9 @@ public final class Chat {
       @Override
       public void invoke(Scanner args) {
         final ServerInfo info = context.getServerUptime();
-        if(info == null)
+        if (info == null) {
           System.out.println("ERROR: unable to retrieve server uptime");
+        }
         else {
           long uptimeInMs = Time.now().inMs() - info.startTime.inMs();
           long second = (uptimeInMs / 1000) % 60;
@@ -239,7 +240,6 @@ public final class Chat {
         System.out.println("    Go back to ROOT MODE.");
         System.out.println("  exit");
         System.out.println("    Exit the program.");
-
       }
     });
 
