@@ -12,6 +12,7 @@ public final class Tokenizer {
       at = 0;
       token = new StringBuilder();
    }
+
    public String next() throws IOException {
       // Skip all leading whitespace
       while (remaining() > 0 && Character.isWhitespace(peek())) {

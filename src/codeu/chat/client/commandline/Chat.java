@@ -50,7 +50,6 @@ public final class Chat {
   // the system wants to exit, the function will return false.
   //
   public boolean handleCommand(String line) {
-
       final List<String> args = new ArrayList<>();
       final Tokenizer tokenizer = new Tokenizer(line);
       try {

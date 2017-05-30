@@ -58,6 +58,6 @@ final class Panel {
       command.invoke(args);
     }
     return command != null;
-}
+   }
 
 }
