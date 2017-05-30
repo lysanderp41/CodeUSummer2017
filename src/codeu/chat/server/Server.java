@@ -177,10 +177,10 @@ public final class Server {
     });
 
     //Gets the Server 
-    this.commands.put(NetworkCode.SERVER_INFO_REQUEST, new Command(){
+    this.commands.put(NetworkCode.SERVER_VERSION_REQUEST, new Command(){
       @Override
       public void onMessage(InputStream in, OutputStream out) throws IOException{
-        Serializers.INTEGER.write(out,NetworkCode.SERVER_INFO_RESPONSE);
+        Serializers.INTEGER.write(out,NetworkCode.SERVER_VERSION_RESPONSE);
         Uuid.SERIALIZER.write(out,info.version);
       }
       

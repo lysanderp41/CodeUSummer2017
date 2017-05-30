@@ -138,10 +138,10 @@ final class View implements BasicView {
     return messages;
   }
   //get the info object from the server 
-  public ServerInfo getInfo(){
+  public ServerInfo getVersion(){
     try(final Connection connection = this.source.connect()){
-      Serializers.INTEGER.write(connection.out(),NetworkCode.SERVER_INFO_REQUEST);
-      if (Serializers.INTEGER.read(connection.in())== NetworkCode.SERVER_INFO_RESPONSE){
+      Serializers.INTEGER.write(connection.out(),NetworkCode.SERVER_VERSION_REQUEST);
+      if (Serializers.INTEGER.read(connection.in())== NetworkCode.SERVER_VERSION_RESPONSE){
         final Uuid version = Uuid.SERIALIZER.read(connection.in());
         return new ServerInfo(version);
       }else{

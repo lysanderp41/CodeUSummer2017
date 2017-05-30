@@ -15,8 +15,7 @@ public final class ServerInfo {
 		}
 		catch(Exception e){
 			this.version = null;
-		}
-		
+		}	
 	}
 	public ServerInfo(Uuid version){
 		this.version = version;
