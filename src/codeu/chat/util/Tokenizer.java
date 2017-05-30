@@ -16,7 +16,9 @@ public final class Tokenizer
   //functions (methods)
   public Tokenizer(String source)
   {
-
+    this.source = source;
+    at = 0;
+    token = new StringBuilder();
   }
 
   public String next() throws IOException
@@ -31,7 +33,7 @@ public final class Tokenizer
     {
       return null;
     }
-    else if(peek() == ' \" ')
+    else if(peek() == '"')
     {
       //read a token surrounded by qoutes
       readWithQuotes();
@@ -63,7 +65,7 @@ public final class Tokenizer
   //reads tokens
   private char read() throws IOException
   {
-    final char c = peak();
+    final char c = peek();
     at =+ 1;
     return c;
   }
@@ -84,11 +86,11 @@ public final class Tokenizer
   private String readWithQuotes() throws IOException
   {
     token.setLength(0);  //clear token
-    if(read != ' \" ')
+    if(read != '"')
     {
       throw new IOException("Strings must start with an opening quote");
     }
-    while(peek() != ' \" ')
+    while(peek() != '"')
     {
       token.append(read());
     }
