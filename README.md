@@ -1,6 +1,9 @@
 
 # CODEU CHAT SERVER | README
 
+This is the repository for Project Group 15's chat server and client.
+
+TODO: Come up with a better name than "Project Group 15"
 
 ## DISCLAIMER
 
