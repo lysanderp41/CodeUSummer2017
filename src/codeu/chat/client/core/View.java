@@ -17,12 +17,7 @@ package codeu.chat.client.core;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import codeu.chat.common.BasicView;
-import codeu.chat.common.ConversationHeader;
-import codeu.chat.common.ConversationPayload;
-import codeu.chat.common.Message;
-import codeu.chat.common.NetworkCode;
-import codeu.chat.common.User;
+import codeu.chat.common.*;
 import codeu.chat.util.Logger;
 import codeu.chat.util.Serializers;
 import codeu.chat.util.Time;
@@ -135,5 +130,22 @@ final class View implements BasicView {
     }
 
     return messages;
+  }
+
+
+  public ServerInfo getServerUptime() {
+    try (final Connection connection = source.connect()) {
+      Serializers.INTEGER.write(connection.out(),NetworkCode.SERVER_UPTIME_REQUEST);
+      if(Serializers.INTEGER.read(connection.in()) == NetworkCode.SERVER_UPTIME_RESPONSE) {
+        final Time startTime = Time.SERIALIZER.read(connection.in());
+        return new ServerInfo(startTime);
+      }else {
+        LOG.error("Response from server failed.");
+      }
+    }catch(Exception ex) {
+      System.out.println("ERROR: Exception during call on server. Check log for details.");
+      LOG.error(ex,"Exception during call on server");
+    }
+    return null;
   }
 }
