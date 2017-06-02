@@ -176,14 +176,14 @@ public final class Server {
       }
     });
 
-    //Gets the Server 
+    //Gets the Server information
     this.commands.put(NetworkCode.SERVER_VERSION_REQUEST, new Command(){
       @Override
-      public void onMessage(InputStream in, OutputStream out) throws IOException{
+      public void onMessage(InputStream in, OutputStream out) throws IOException {
+
         Serializers.INTEGER.write(out,NetworkCode.SERVER_VERSION_RESPONSE);
         Uuid.SERIALIZER.write(out,info.version);
-      }
-      
+      } 
     });
 
     this.timeline.scheduleNow(new Runnable() {

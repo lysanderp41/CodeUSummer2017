@@ -108,10 +108,10 @@ public final class Chat {
         System.out.println("    Add a new user with the given name.");
         System.out.println("  u-sign-in <name>");
         System.out.println("    Sign in as the user with the given name.");
+        System.out.println("  version");
+        System.out.println("    Display the version of the server.");
         System.out.println("  exit");
         System.out.println("    Exit the program.");
-        System.out.println("  version");
-        System.out.println("  Display the version of the server.");
       }
     });
 
@@ -190,16 +190,16 @@ public final class Chat {
     //
     panel.register("version", new Panel.Command() {
       @Override
-      public void invoke(Scanner args){
+      public void invoke(Scanner args) {
         final ServerInfo info = context.getVersion();
-        if (info == null){
+        if (info == null) {
           System.out.println("ERROR, server did not send valid info");
-        }
-        else{
+        } else {
           System.out.println(info.version);
         }
       }
     });
+
     // Now that the panel has all its commands registered, return the panel
     // so that it can be used.
     return panel;

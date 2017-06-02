@@ -138,21 +138,25 @@ final class View implements BasicView {
     return messages;
   }
   //get the info object from the server 
-  public ServerInfo getVersion(){
-    try(final Connection connection = this.source.connect()){
+  public ServerInfo getVersion() {
+
+    try (final Connection connection = this.source.connect()) {
+
       Serializers.INTEGER.write(connection.out(),NetworkCode.SERVER_VERSION_REQUEST);
-      if (Serializers.INTEGER.read(connection.in())== NetworkCode.SERVER_VERSION_RESPONSE){
+      
+      if (Serializers.INTEGER.read(connection.in())== NetworkCode.SERVER_VERSION_RESPONSE) {
         final Uuid version = Uuid.SERIALIZER.read(connection.in());
         return new ServerInfo(version);
-      }else{
+      } else {
         LOG.error("ERROR, server did not respond with proper response");
         System.out.println("ERROR, server did not respons with proper response");
       }
-    }catch(Exception ex){
+    } catch (Exception ex) {
       LOG.error(ex,"ERROR, something went wrong with the connection");
       System.out.println("ERROR, something went wrong with the connection");
     }
+
     return null;
-  }
-  
+  } 
+
 }
