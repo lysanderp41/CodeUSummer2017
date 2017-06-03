@@ -26,7 +26,7 @@ public final class TokenizerTest {
 
   @Test
   public void testWithQuotes() throws IOException {
-    final Tokenizer tokenizer  = new Tokenizer("\"hello world\"\"how are you\"");
+    final Tokenizer tokenizer  = new Tokenizer("\"hello world\" \"how are you\"");
 
     assertEquals(tokenizer.next(), "hello world");
     assertEquals(tokenizer.next(), "how are you");

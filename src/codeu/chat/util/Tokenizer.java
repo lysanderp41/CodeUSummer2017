@@ -34,7 +34,7 @@ public final class Tokenizer {
       //if there are no characters remaining return null
       if (remaining() <= 0) {
         return null;
-      } else if (peek() == '\"') {
+      } else if (peek() == '"') {
         //read a token surrounded by qoutes
         return readWithQuotes();
       } else {
@@ -70,7 +70,7 @@ public final class Tokenizer {
   private String readWithNoQuotes() throws IOException {
     token.setLength(0);  //clear token
 
-    while (remaining() >= 0 && !Character.isWhitespace(peek())) {
+    while (remaining() > 0 && !Character.isWhitespace(peek())) {
       token.append(read());
     }
     return token.toString();
@@ -79,10 +79,10 @@ public final class Tokenizer {
   //reads tokens with qoutes
   private String readWithQuotes() throws IOException {
     token.setLength(0);  //clear token
-    if (read() != '\"') {
+    if (read() != '"') {
       throw new IOException("Strings must start with an opening quote");
     }
-    while (peek() != '\"') {
+    while (peek() != '"') {
       token.append(read());
     }
     read(); //read closing qoute that caused loop exit
