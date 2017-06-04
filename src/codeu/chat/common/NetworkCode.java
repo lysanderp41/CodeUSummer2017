@@ -38,4 +38,7 @@ public final class NetworkCode {
       RELAY_WRITE_RESPONSE = 30,
       SERVER_UPTIME_REQUEST = 31,
       SERVER_UPTIME_RESPONSE = 32;
+      SERVER_VERSION_REQUEST = 33,
+      SERVER_VERSION_RESPONSE = 34; 
+
 }

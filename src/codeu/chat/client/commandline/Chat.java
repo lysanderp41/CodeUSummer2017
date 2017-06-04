@@ -22,6 +22,7 @@ import java.util.Stack;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.IOException;
+
 import codeu.chat.client.core.Context;
 import codeu.chat.client.core.ConversationContext;
 import codeu.chat.client.core.MessageContext;
@@ -122,6 +123,8 @@ public final class Chat {
         System.out.println("    Add a new user with the given name.");
         System.out.println("  u-sign-in <name>");
         System.out.println("    Sign in as the user with the given name.");
+        System.out.println("  version");
+        System.out.println("    Display the version of the server.");
         System.out.println("  uptime");
         System.out.println("    Display the amount of time the server has been running.");
         System.out.println("  exit");
@@ -216,6 +219,22 @@ public final class Chat {
           }
         }
         return null;
+      }
+    });
+
+    // Version Check 
+    //
+    // adds a new command "version" and will display the version it is in 
+    //
+    panel.register("version", new Panel.Command() {
+      @Override
+      public void invoke(Scanner args) {
+        final ServerInfo info = context.getVersion();
+        if (info == null) {
+          System.out.println("ERROR, server did not send valid info");
+        } else {
+          System.out.println(info.version);
+        }
       }
     });
 
