@@ -137,6 +137,7 @@ final class View implements BasicView {
 
     return messages;
   }
+
   //get the info object from the server 
   public ServerInfo getVersion() {
 
@@ -158,5 +159,24 @@ final class View implements BasicView {
 
     return null;
   } 
+
+  public ServerInfo getServerUptime() {
+    
+    try (final Connection connection = source.connect()) {
+      
+      Serializers.INTEGER.write(connection.out(),NetworkCode.SERVER_UPTIME_REQUEST);
+      
+      if (Serializers.INTEGER.read(connection.in()) == NetworkCode.SERVER_UPTIME_RESPONSE) {
+        final Time startTime = Time.SERIALIZER.read(connection.in());
+        return new ServerInfo(startTime);
+      } else {
+        LOG.error("Response from server failed.");
+      }
+    } catch(Exception ex) {
+      System.out.println("ERROR: Exception during call on server. Check log for details.");
+      LOG.error(ex,"Exception during call on server");
+    }
+    return null;
+  }
 
 }

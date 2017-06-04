@@ -55,7 +55,14 @@ final class ClientMain {
     try (final BufferedReader input = new BufferedReader(new InputStreamReader(System.in))) {
       while (keepRunning) {
         System.out.print(">>> ");
-        keepRunning = chat.handleCommand(input.readLine().trim());
+        if (input == null) {
+          break;
+        }
+        String untrimmedLine = input.readLine();
+        if (untrimmedLine == null) {
+          break;
+        }
+        keepRunning = chat.handleCommand(untrimmedLine.trim());
       }
     } catch (IOException ex) {
       LOG.error("Failed to read from input");

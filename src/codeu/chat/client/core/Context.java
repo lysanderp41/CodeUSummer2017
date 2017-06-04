@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import codeu.chat.common.ServerInfo;
 import codeu.chat.common.BasicView;
+import codeu.chat.common.ServerInfo;
 import codeu.chat.common.User;
+import codeu.chat.util.Time;
 import codeu.chat.util.Uuid;
 import codeu.chat.util.connections.ConnectionSource;
 
@@ -50,5 +52,9 @@ public final class Context {
 
   public ServerInfo getVersion() {
     return view.getVersion();
+
+  public ServerInfo getServerUptime() {
+    return view.getServerUptime();
+
   }
 }
