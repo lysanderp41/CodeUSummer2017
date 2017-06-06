@@ -62,7 +62,7 @@ public final class Tokenizer {
   //reads tokens
   private char read() throws IOException {
     final char c = peek();
-    at =+ 1;
+    at += 1;
     return c;
   }
 
