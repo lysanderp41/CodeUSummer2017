@@ -15,13 +15,13 @@
 package codeu.chat.client.commandline;
 
 import java.time.format.DateTimeFormatter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Stack;
-import java.util.List;
-import java.util.ArrayList;
-import java.io.IOException;
 
 import codeu.chat.client.core.Context;
 import codeu.chat.client.core.ConversationContext;
@@ -54,17 +54,17 @@ public final class Chat {
   // the system wants to exit, the function will return false.
   //
   public boolean handleCommand(String line) {
-      final List<String> args = new ArrayList<>();
-      final Tokenizer tokenizer = new Tokenizer(line);
-      try {
-         for (String token = tokenizer.next(); token != null; token = tokenizer.next()) {
-            args.add(token);
-         }
-      } catch (IOException e) {
-         System.out.println("Error: " + e);
+    final List<String> args = new ArrayList<>();
+    final Tokenizer tokenizer = new Tokenizer(line);
+    try {
+      for (String token = tokenizer.next(); token != null; token = tokenizer.next()) {
+        args.add(token);
       }
-      final String command = args.get(0);
-      args.remove(0);
+    } catch (IOException e) {
+      System.out.println("Error: " + e);
+    }
+    final String command = args.get(0);
+    args.remove(0);
 
 
     // Because "exit" and "back" are applicable to every panel, handle

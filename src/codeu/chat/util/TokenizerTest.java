@@ -16,6 +16,7 @@ public final class TokenizerTest {
       assertEquals(tokenizer.next(), "you");
       assertEquals(tokenizer.next(), null);
    }
+
    @Test
    public void testWithNoQuotes() throws IOException {
       final Tokenizer tokenizer = new Tokenizer("\"hello world\" \"how are you\"");

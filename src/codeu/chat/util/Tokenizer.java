@@ -16,7 +16,7 @@ public final class Tokenizer {
    public String next() throws IOException {
       // Skip all leading whitespace
       while (remaining() > 0 && Character.isWhitespace(peek())) {
-      read();  // ignore the result because we already know that it is a whitespace character
+         read();  // ignore the result because we already know that it is a whitespace character
       }
       if (remaining() <= 0) {
          return null;
@@ -47,7 +47,6 @@ public final class Tokenizer {
       read(); // read the closing the quote that allowed us to exit the loop
       return token.toString();
    }
-
 
    private int remaining() {
       return source.length() - at;
