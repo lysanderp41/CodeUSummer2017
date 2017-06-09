@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import codeu.chat.common.ServerInfo;
 import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.ConversationPayload;
 import codeu.chat.common.LinearUuidGenerator;
@@ -63,6 +64,9 @@ public final class Server {
 
   private final Relay relay;
   private Uuid lastSeen = Uuid.NULL;
+
+  //creates instance of server's information
+  private static final ServerInfo info = new ServerInfo();
 
   public Server(final Uuid id, final Secret secret, final Relay relay) {
 
@@ -169,6 +173,24 @@ public final class Server {
 
         Serializers.INTEGER.write(out, NetworkCode.GET_MESSAGES_BY_ID_RESPONSE);
         Serializers.collection(Message.SERIALIZER).write(out, messages);
+      }
+    });
+
+    //Gets the Server information
+    this.commands.put(NetworkCode.SERVER_VERSION_REQUEST, new Command(){
+      @Override
+      public void onMessage(InputStream in, OutputStream out) throws IOException {
+
+        Serializers.INTEGER.write(out,NetworkCode.SERVER_VERSION_RESPONSE);
+        Uuid.SERIALIZER.write(out,info.version);
+      } 
+      
+    // Get Server Uptime - A client wants to get the amount of time the server has been running.
+    this.commands.put(NetworkCode.SERVER_UPTIME_REQUEST, new Command() {
+      @Override
+      public void onMessage(InputStream in, OutputStream out) throws IOException {
+        Serializers.INTEGER.write(out, NetworkCode.SERVER_UPTIME_RESPONSE);
+        Time.SERIALIZER.write(out, info.startTime);
       }
     });
 
