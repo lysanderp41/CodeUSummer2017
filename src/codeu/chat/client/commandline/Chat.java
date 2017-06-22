@@ -139,7 +139,7 @@ public final class Chat {
     //
     panel.register("uptime", new Panel.Command() {
       @Override
-      public void invoke(Scanner args) {
+      public void invoke(List<String> args) {
         final ServerInfo info = context.getServerUptime();
         if (info == null) {
           System.out.println("ERROR: unable to retrieve server uptime");
@@ -228,7 +228,7 @@ public final class Chat {
     //
     panel.register("version", new Panel.Command() {
       @Override
-      public void invoke(Scanner args) {
+      public void invoke(List<String> args) {
         final ServerInfo info = context.getVersion();
         if (info == null) {
           System.out.println("ERROR, server did not send valid info");
