@@ -65,6 +65,8 @@ public final class Server {
   private final Relay relay;
   private Uuid lastSeen = Uuid.NULL;
 
+  private LogQueue logQueue;
+
   //creates instance of server's information
   private static final ServerInfo info = new ServerInfo();
 
@@ -74,6 +76,7 @@ public final class Server {
     this.secret = secret;
     this.controller = new Controller(id, model);
     this.relay = relay;
+    this.logQueue = new LogQueue();
 
     // New Message - A client wants to add a new message to the back end.
     this.commands.put(NetworkCode.NEW_MESSAGE_REQUEST, new Command() {
