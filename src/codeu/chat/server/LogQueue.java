@@ -4,10 +4,7 @@ package codeu.chat.server;
 
 import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.TimerTask;
 import java.util.ArrayDeque;
 import java.util.Timer;
@@ -19,8 +16,7 @@ public class LogQueue {
     File transactionLog;
     ArrayDeque<String> transactions;
     Timer timer;
-    FileOutputStream outputStream;
-    PrintWriter out;
+    BufferedWriter out;
 
     //checks to see if there is a transaction waiting in the queue and writes it to the file
     TimerTask writeTransaction;
@@ -30,23 +26,27 @@ public class LogQueue {
         transactionLog = new File("transaction_log.txt");
 
         try {
-            out = new PrintWriter(transactionLog);
-        } catch (FileNotFoundException e) {
-            System.out.println("FILE NOT FOUND");
+            if(!transactionLog.exists())
+                transactionLog.createNewFile();
+            //ensures the writer is appending and not overwriting what is in the file
+            out = new BufferedWriter(new FileWriter(transactionLog,true));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         timer = new Timer();
-
         writeTransaction = new TimerTask() {
             @Override
             public void run() {
                 if (!transactions.isEmpty()) {
-                    out.write(transactions.poll());
-                    out.flush();
+                    try {
+                        out.write(transactions.poll() + "\n");
+                        out.flush();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         };
-
         timer.scheduleAtFixedRate(writeTransaction, 1, 100);
     }
-
 }
