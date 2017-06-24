@@ -22,6 +22,7 @@ public final class ServerInfo {
 }
   public ServerInfo(Uuid version) {
     this.version = version;
+    this.startTime = null;
 	}
   
   public ServerInfo(Time startTime) {

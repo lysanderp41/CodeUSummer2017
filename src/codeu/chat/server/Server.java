@@ -183,8 +183,9 @@ public final class Server {
 
         Serializers.INTEGER.write(out,NetworkCode.SERVER_VERSION_RESPONSE);
         Uuid.SERIALIZER.write(out,info.version);
-      } 
-      
+      }
+    });
+
     // Get Server Uptime - A client wants to get the amount of time the server has been running.
     this.commands.put(NetworkCode.SERVER_UPTIME_REQUEST, new Command() {
       @Override
