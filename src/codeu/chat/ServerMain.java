@@ -17,6 +17,7 @@ package codeu.chat;
 
 import java.io.IOException;
 import java.io.File;
+import java.io.PrintWritter;
 
 import codeu.chat.common.Relay;
 import codeu.chat.common.Secret;
@@ -37,6 +38,7 @@ final class ServerMain {
 
   public static void main(String[] args) {
 
+      readTransactionLog();
     Logger.enableConsoleOutput();
 
     try {
@@ -113,5 +115,24 @@ final class ServerMain {
         LOG.error(ex, "Failed to establish connection.");
       }
     }
+  }
+
+  public static void readTransactionLog() {
+
+      try {
+          File transactionLog = new File("Transaction.txt");
+          if(!transactionLog.exists()) {
+              transactionLog.createNewFile();
+          }
+          Scanner scan = new Scanner(transactionLog);   //read transaction log if it already exists
+          writer = new PrintWriter(new FileOutputStream(transactionLog, true));
+          while (scan.hasNextLine()) {
+              String item = scan.nextLine().trim(); //item in transaction log
+              writer.println(item);
+          }
+          writer.close();
+      } catch(Exception e) {
+          System.out.println(e);
+      }
   }
 }
