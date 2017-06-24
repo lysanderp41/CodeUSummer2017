@@ -17,7 +17,7 @@ public final class Interests {
     @Override
     public void write(OutputStream out, Interests value) throws IOException {
 
-      Serializers.collection(Interests.SERIALIZER).write(out, value.interests);
+      Serializers.collection(Uuid.SERIALIZER).write(out, value.interests);
       Time.SERIALIZER.write(out, value.lastStatusUpdate);
       Time.SERIALIZER.write(out, value.creation);
 
@@ -27,7 +27,7 @@ public final class Interests {
     public Interests read(InputStream in) throws IOException {
 
       return new Interests(
-          Serializers.collection(Interests.SERIALIZER).read(in),
+          Serializers.collection(Uuid.SERIALIZER).read(in),
           Time.SERIALIZER.read(in),
           Time.SERIALIZER.read(in)
       );
@@ -35,11 +35,11 @@ public final class Interests {
     }
   };
 
-  public final Collection<Interests> interests;
+  public final Collection<Uuid> interests;
   public final Time lastStatusUpdate;
   public final Time creation;
 
-  public Interests(Collection<Interests> interests, Time lastStatusUpdate, Time creation) {
+  public Interests(Collection<Uuid> interests, Time lastStatusUpdate, Time creation) {
 
     this.interests = interests;
     this.lastStatusUpdate = lastStatusUpdate;
