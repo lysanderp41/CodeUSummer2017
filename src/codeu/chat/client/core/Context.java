@@ -30,15 +30,15 @@ public final class Context {
   private final View view;
   private final Controller controller;
 
-  public Context(ConnectionSource source) {
-    this.view = new View(source);
+  public Context(ConnectionSource source) {	
+  	this.view = new View(source);
     this.controller = new Controller(source);
   }
 
   public UserContext create(String name) {
     final User user = controller.newUser(name);
     return user == null ?
-        null :
+    	null :
         new UserContext(user, view, controller);
   }
 
@@ -52,9 +52,8 @@ public final class Context {
 
   public ServerInfo getVersion() {
     return view.getVersion();
-
+  }
   public ServerInfo getServerUptime() {
     return view.getServerUptime();
-
   }
 }

@@ -5,29 +5,26 @@ import codeu.chat.util.Uuid;
 import codeu.chat.util.Time;
 
 public final class ServerInfo {
-	private final static String SERVER_VERSION = "1.0.0";
-	public Uuid version;
+  
+  private final static String SERVER_VERSION = "1.0.0";
+  public Uuid version;
   public final Time startTime;
 
-	public ServerInfo(){
-		this.version = null;
-		try {
-			 this.version = Uuid.parse(SERVER_VERSION);
-			 return;
-		} catch (Exception e) {
-			this.version = null;
-		}	
-	}
-
-	public ServerInfo(Uuid version) {
-		this.version = version;
+  public ServerInfo(){
+  	this.version = null;
+    this.startTime = Time.now();
+	try {
+	  this.version = Uuid.parse(SERVER_VERSION);
+	  return;
+	} catch (Exception e) {
+	  this.version = null;
+	}	
+}
+  public ServerInfo(Uuid version) {
+    this.version = version;
 	}
   
-   public ServerInfo() {
-        this.startTime = Time.now();
-    }
-  
-   public ServerInfo(Time startTime) {
-        this.startTime = startTime;
+  public ServerInfo(Time startTime) {
+    this.startTime = startTime;
    }
 }
