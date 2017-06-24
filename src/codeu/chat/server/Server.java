@@ -186,7 +186,7 @@ public final class Server {
         final Interests interests = controller.newInterests(ids);
 
         Serializers.INTEGER.write(out, NetworkCode.NEW_INTERESTS_RESPONSE);
-        Serializers.nullable(User.SERIALIZER).write(out, interests);
+        Serializers.nullable(Interests.SERIALIZER).write(out, interests);
       }
     });
 
