@@ -18,6 +18,7 @@ import java.util.Collection;
 
 import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.ConversationPayload;
+import codeu.chat.common.Interests;
 import codeu.chat.common.Message;
 import codeu.chat.common.User;
 import codeu.chat.util.Uuid;
@@ -51,5 +52,11 @@ public interface BasicView {
   //
   //   Return all messages whose id is found in the given collection.
   Collection<Message> getMessages(Collection<Uuid> ids);
+
+  // GET INTERESTS
+  //
+  //   Return all the interests objects.
+  // TODO: uncomment when implemented in client View
+  //Collection<Interests> getInterests();
 
 }
