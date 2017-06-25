@@ -202,20 +202,7 @@ public final class Server {
         Serializers.collection(Message.SERIALIZER).write(out, messages);
       }
     });
-
-    // Get Interests By userId - A client wants to get a single interests object given a userId
-    this.commands.put(NetworkCode.GET_INTERESTS_BY_USERID_REQUEST, new Command() {
-      @Override
-      public void onMessage(InputStream in, OutputStream out) throws IOException {
-
-        final Collection<Uuid> userid = (Uuid.SERIALIZER).read(in);
-        final Collection<Interest> interests = view.getInterests(userid);
-
-        Serializers.INTEGER.write(out, NetworkCode.GET_INTERESTS_BY_USERID_RESPONSE);
-        Serializers.collection(Interests.SERIALIZER).write(out, interests);
-      }
-    });
-
+    
     //Gets the Server information
     this.commands.put(NetworkCode.SERVER_VERSION_REQUEST, new Command(){
       @Override
