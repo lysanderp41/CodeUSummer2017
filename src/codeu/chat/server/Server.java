@@ -134,7 +134,7 @@ public final class Server {
         final Interests interests = controller.newInterest(userid, interest);
 
         Serializers.INTEGER.write(out, NetworkCode.NEW_INTERESTS_RESPONSE);
-        Serializers.nullable(Interests.SERIALIZER).write(out, interest);
+        Serializers.nullable(Interests.SERIALIZER).write(out, interests);
       }
     });
 
@@ -170,7 +170,7 @@ public final class Server {
         final Collection<Interests> interests = view.getInterests();
 
         Serializers.INTEGER.write(out, NetworkCode.GET_INTERESTS_RESPONSE);
-        Serializers.collection(Interests.SERIALIZER).write(out, Interests);
+        Serializers.collection(Interests.SERIALIZER).write(out, interests);
       }
     });
 
@@ -203,7 +203,7 @@ public final class Server {
       }
     });
 
-    // Get Interests By userId - A client wants to get a subset of the interests given a userId
+    // Get Interests By userId - A client wants to get a single interests object given a userId
     this.commands.put(NetworkCode.GET_INTERESTS_BY_USERID_REQUEST, new Command() {
       @Override
       public void onMessage(InputStream in, OutputStream out) throws IOException {
