@@ -17,16 +17,16 @@ package codeu.chat;
 
 import java.io.IOException;
 import java.io.File;
-import java.io.PrintWritter;
+import java.io.PrintWriter;
+import java.util.Scanner;
 
 import codeu.chat.common.Relay;
 import codeu.chat.common.Secret;
 import codeu.chat.server.NoOpRelay;
 import codeu.chat.server.RemoteRelay;
 import codeu.chat.server.Server;
-import codeu.chat.util.Logger;
-import codeu.chat.util.RemoteAddress;
-import codeu.chat.util.Uuid;
+import codeu.chat.server.Controller;
+import codeu.chat.util.*;
 import codeu.chat.util.connections.ClientConnectionSource;
 import codeu.chat.util.connections.Connection;
 import codeu.chat.util.connections.ConnectionSource;
@@ -38,7 +38,6 @@ final class ServerMain {
 
   public static void main(String[] args) {
 
-      readTransactionLog();
     Logger.enableConsoleOutput();
 
     try {
@@ -99,8 +98,10 @@ final class ServerMain {
 
     final Server server = new Server(id, secret, relay);
 
+
     LOG.info("Created server.");
 
+    readTransactionLog(server);
     while (true) {
 
       try {
@@ -117,20 +118,28 @@ final class ServerMain {
     }
   }
 
-  public static void readTransactionLog() {
+  public static void readTransactionLog(Server server) {
 
       try {
-          File transactionLog = new File("Transaction.txt");
-          if(!transactionLog.exists()) {
+          File transactionLog = new File("transaction_log.txt");
+          if (!transactionLog.exists()) {
               transactionLog.createNewFile();
           }
           Scanner scan = new Scanner(transactionLog);   //read transaction log if it already exists
-          writer = new PrintWriter(new FileOutputStream(transactionLog, true));
           while (scan.hasNextLine()) {
               String item = scan.nextLine().trim(); //item in transaction log
-              writer.println(item);
+              System.out.println(item);
+              Tokenizer tokenizer = new Tokenizer(item);
+              String action = tokenizer.next();
+              if (action.equals("CREATE-CONVERSATION")) {
+                  Uuid uuid = Uuid.parse(tokenizer.next());
+                  Uuid ownerUuid = Uuid.parse(tokenizer.next());
+                  String title = tokenizer.next();
+                  long timeInMs = Long.parseLong(tokenizer.next());
+                  Time timeCreated = Time.fromMs(timeInMs);
+                  server.addConversation(uuid,title,ownerUuid,timeCreated);
+              }
           }
-          writer.close();
       } catch(Exception e) {
           System.out.println(e);
       }

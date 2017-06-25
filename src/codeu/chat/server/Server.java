@@ -123,6 +123,8 @@ public final class Server {
 
         Serializers.INTEGER.write(out, NetworkCode.NEW_CONVERSATION_RESPONSE);
         Serializers.nullable(ConversationHeader.SERIALIZER).write(out, conversation);
+        logQueue.transactions.add("ADD-CONVERSATION " + conversation.id.toString() + " " + owner.toString() + " " +
+        title + " " + conversation.creation.inMs());
       }
     });
 
@@ -308,5 +310,9 @@ public final class Server {
                     relay.pack(message.id, message.content, message.creation));
       }
     };
+  }
+
+  public void addConversation(Uuid id, String title, Uuid owner, Time created) {
+    controller.newConversation(id,title,owner,created);
   }
 }
