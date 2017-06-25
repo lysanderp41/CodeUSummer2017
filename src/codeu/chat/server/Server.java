@@ -131,7 +131,7 @@ public final class Server {
 
         final Uuid userid = (Uuid.SERIALIZER).read(in);
         final Uuid interest = (Uuid.SERIALIZER).read(in);
-        final Interests interests = controller.newInterest(Uuid userid, Uuid interest);
+        final Interests interests = controller.newInterest(userid, interest);
 
         Serializers.INTEGER.write(out, NetworkCode.NEW_INTERESTS_RESPONSE);
         Serializers.nullable(Interests.SERIALIZER).write(out, interest);
