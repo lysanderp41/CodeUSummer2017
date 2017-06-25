@@ -15,15 +15,13 @@
 
 package codeu.chat.server;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import codeu.chat.common.ServerInfo;
 import codeu.chat.common.ConversationHeader;
@@ -34,11 +32,7 @@ import codeu.chat.common.NetworkCode;
 import codeu.chat.common.Relay;
 import codeu.chat.common.Secret;
 import codeu.chat.common.User;
-import codeu.chat.util.Logger;
-import codeu.chat.util.Serializers;
-import codeu.chat.util.Time;
-import codeu.chat.util.Timeline;
-import codeu.chat.util.Uuid;
+import codeu.chat.util.*;
 import codeu.chat.util.connections.Connection;
 
 public final class Server {
@@ -314,5 +308,32 @@ public final class Server {
 
   public void addConversation(Uuid id, String title, Uuid owner, Time created) {
     controller.newConversation(id,title,owner,created);
+  }
+
+  public void readTransactionLog() {
+
+    try {
+      File transactionLog = new File("transaction_log.txt");
+      if (!transactionLog.exists()) {
+        transactionLog.createNewFile();
+      }
+      Scanner scan = new Scanner(transactionLog);   //read transaction log if it already exists
+      while (scan.hasNextLine()) {
+        String item = scan.nextLine().trim(); //item in transaction log
+        Tokenizer tokenizer = new Tokenizer(item);
+        String action = tokenizer.next();
+
+        if (action.equals("ADD-CONVERSATION")) {
+          Uuid uuid = Uuid.parse(tokenizer.next());
+          Uuid ownerUuid = Uuid.parse(tokenizer.next());
+          String title = tokenizer.next();
+          long timeInMs = Long.parseLong(tokenizer.next());
+          Time timeCreated = Time.fromMs(timeInMs);
+          controller.newConversation(uuid, title, ownerUuid, timeCreated);
+        }
+      }
+    } catch(Exception e) {
+      System.out.println(e);
+    }
   }
 }

@@ -101,7 +101,7 @@ final class ServerMain {
 
     LOG.info("Created server.");
 
-    readTransactionLog(server);
+    server.readTransactionLog();
     while (true) {
 
       try {
@@ -116,32 +116,5 @@ final class ServerMain {
         LOG.error(ex, "Failed to establish connection.");
       }
     }
-  }
-
-  public static void readTransactionLog(Server server) {
-
-      try {
-          File transactionLog = new File("transaction_log.txt");
-          if (!transactionLog.exists()) {
-              transactionLog.createNewFile();
-          }
-          Scanner scan = new Scanner(transactionLog);   //read transaction log if it already exists
-          while (scan.hasNextLine()) {
-              String item = scan.nextLine().trim(); //item in transaction log
-              System.out.println(item);
-              Tokenizer tokenizer = new Tokenizer(item);
-              String action = tokenizer.next();
-              if (action.equals("CREATE-CONVERSATION")) {
-                  Uuid uuid = Uuid.parse(tokenizer.next());
-                  Uuid ownerUuid = Uuid.parse(tokenizer.next());
-                  String title = tokenizer.next();
-                  long timeInMs = Long.parseLong(tokenizer.next());
-                  Time timeCreated = Time.fromMs(timeInMs);
-                  server.addConversation(uuid,title,ownerUuid,timeCreated);
-              }
-          }
-      } catch(Exception e) {
-          System.out.println(e);
-      }
   }
 }
