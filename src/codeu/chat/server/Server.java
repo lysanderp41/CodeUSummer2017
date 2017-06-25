@@ -162,6 +162,18 @@ public final class Server {
       }
     });
 
+    // Get Interests - A client wants to get all the interests from the back end.
+    this.commands.put(NetworkCode.GET_INTERESTS_REQUEST, new Command() {
+      @Override
+      public void onMessage(InputStream in, OutputStream out) throws IOException {
+
+        final Collection<Interests> interests = view.getInterests();
+
+        Serializers.INTEGER.write(out, NetworkCode.GET_INTERESTS_RESPONSE);
+        Serializers.collection(Interests.SERIALIZER).write(out, Interests);
+      }
+    });
+
     // Get Conversations By Id - A client wants to get a subset of the converations from
     //                           the back end. Normally this will be done after calling
     //                           Get Conversations to get all the headers and now the client
