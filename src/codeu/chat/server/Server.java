@@ -28,6 +28,7 @@ import java.util.Map;
 import codeu.chat.common.ServerInfo;
 import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.ConversationPayload;
+import codeu.chat.common.Interests;
 import codeu.chat.common.LinearUuidGenerator;
 import codeu.chat.common.Message;
 import codeu.chat.common.NetworkCode;
@@ -123,6 +124,20 @@ public final class Server {
       }
     });
 
+    // New Interest - A client wants to add a new interest to the back end.
+    this.commands.put(NetworkCode.NEW_INTERESTS_REQUEST,  new Command() {
+      @Override
+      public void onMessage(InputStream in, OutputStream out) throws IOException {
+
+        final Uuid userid = (Uuid.SERIALIZER).read(in);
+        final Uuid interest = (Uuid.SERIALIZER).read(in);
+        final Interests interests = controller.newInterest(userid, interest);
+
+        Serializers.INTEGER.write(out, NetworkCode.NEW_INTERESTS_RESPONSE);
+        Serializers.nullable(Interests.SERIALIZER).write(out, interests);
+      }
+    });
+
     // Get Users - A client wants to get all the users from the back end.
     this.commands.put(NetworkCode.GET_USERS_REQUEST, new Command() {
       @Override
@@ -144,6 +159,18 @@ public final class Server {
 
         Serializers.INTEGER.write(out, NetworkCode.GET_ALL_CONVERSATIONS_RESPONSE);
         Serializers.collection(ConversationHeader.SERIALIZER).write(out, conversations);
+      }
+    });
+
+    // Get Interests - A client wants to get all the interests from the back end.
+    this.commands.put(NetworkCode.GET_INTERESTS_REQUEST, new Command() {
+      @Override
+      public void onMessage(InputStream in, OutputStream out) throws IOException {
+
+        final Collection<Interests> interests = view.getInterests();
+
+        Serializers.INTEGER.write(out, NetworkCode.GET_INTERESTS_RESPONSE);
+        Serializers.collection(Interests.SERIALIZER).write(out, interests);
       }
     });
 
@@ -175,7 +202,7 @@ public final class Server {
         Serializers.collection(Message.SERIALIZER).write(out, messages);
       }
     });
-
+    
     //Gets the Server information
     this.commands.put(NetworkCode.SERVER_VERSION_REQUEST, new Command(){
       @Override
