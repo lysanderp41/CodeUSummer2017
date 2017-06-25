@@ -42,4 +42,9 @@ public interface RawController {
   // already in use, the call will fail and null will be returned.
   ConversationHeader newConversation(Uuid id, String title, Uuid owner, Time creationTime);
 
+  // NEW INTEREST
+  //
+  // Add a new interest to the model with a specific id.
+  Interests newInterest(Uuid userid, Uuid interest, Time creationTime);
+
 }
