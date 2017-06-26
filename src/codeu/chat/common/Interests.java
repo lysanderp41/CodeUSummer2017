@@ -36,7 +36,7 @@ public final class Interests {
   };
 
   public final Collection<Uuid> interests;
-  public final Time lastStatusUpdate;
+  public Time lastStatusUpdate;
   public final Time creation;
 
   public Interests(Collection<Uuid> interests, Time lastStatusUpdate, Time creation) {
