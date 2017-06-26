@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import codeu.chat.common.ServerInfo;
 import codeu.chat.common.BasicView;
+import codeu.chat.common.Interests;
 import codeu.chat.common.ServerInfo;
 import codeu.chat.common.User;
 import codeu.chat.util.Time;
@@ -49,7 +50,9 @@ public final class Context {
     }
     return users;
   }
-
+  public Interests getInterests (){
+    return view.getInterests();
+  }
   public ServerInfo getVersion() {
     return view.getVersion();
   }
