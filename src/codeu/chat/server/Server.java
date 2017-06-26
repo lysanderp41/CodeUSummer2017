@@ -202,12 +202,11 @@ public final class Server {
         Serializers.collection(Message.SERIALIZER).write(out, messages);
       }
     });
-    
+
     //Gets the Server information
     this.commands.put(NetworkCode.SERVER_VERSION_REQUEST, new Command(){
       @Override
       public void onMessage(InputStream in, OutputStream out) throws IOException {
-
         Serializers.INTEGER.write(out,NetworkCode.SERVER_VERSION_RESPONSE);
         Uuid.SERIALIZER.write(out,info.version);
       }
