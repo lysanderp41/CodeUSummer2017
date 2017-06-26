@@ -60,6 +60,10 @@ public final class View implements BasicView, SinglesView {
     return all(model.conversationById());
   }
 
+  public ConversationPayload getConversationPayload(Uuid id) {
+    return model.conversationPayloadById().first(id);
+  }
+
   @Override
   public Collection<ConversationPayload> getConversationPayloads(Collection<Uuid> ids) {
     return intersect(model.conversationPayloadById(), ids);
