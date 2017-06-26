@@ -20,6 +20,7 @@ import java.lang.Thread;
 
 import codeu.chat.common.BasicController;
 import codeu.chat.common.ConversationHeader;
+import codeu.chat.common.Interests;
 import codeu.chat.common.Message;
 import codeu.chat.common.NetworkCode;
 import codeu.chat.common.User;
@@ -102,6 +103,29 @@ final class Controller implements BasicController {
 
       if (Serializers.INTEGER.read(connection.in()) == NetworkCode.NEW_CONVERSATION_RESPONSE) {
         response = Serializers.nullable(ConversationHeader.SERIALIZER).read(connection.in());
+      } else {
+        LOG.error("Response from server failed.");
+      }
+    } catch (Exception ex) {
+      System.out.println("ERROR: Exception during call on server. Check log for details.");
+      LOG.error(ex, "Exception during call on server.");
+    }
+
+    return response;
+  }
+
+  //@Override
+  public Interests newInterests(Uuid userid) {
+
+    Interests response = null;
+
+    try (final Connection connection = source.connect()) {
+
+      Serializers.INTEGER.write(connection.out(), NetworkCode.NEW_INTERESTS_REQUEST);
+      Uuid.SERIALIZER.write(connection.out(), userid);
+
+      if (Serializers.INTEGER.read(connection.in()) == NetworkCode.NEW_INTERESTS_RESPONSE) {
+        response = Serializers.nullable(Interests.SERIALIZER).read(connection.in());
       } else {
         LOG.error("Response from server failed.");
       }
