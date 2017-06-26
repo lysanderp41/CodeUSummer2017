@@ -85,7 +85,8 @@ public final class Server {
 
         Serializers.INTEGER.write(out, NetworkCode.NEW_MESSAGE_RESPONSE);
         Serializers.nullable(Message.SERIALIZER).write(out, message);
-
+        logQueue.transactions.add("ADD-MESSAGE " + message.id.toString() + " " + author.toString() + " " + conversation.toString()
+        + " " + "\"" + content + "\"" + " " + message.creation.inMs());
         timeline.scheduleNow(createSendToRelayEvent(
             author,
             conversation,
@@ -103,6 +104,7 @@ public final class Server {
 
         Serializers.INTEGER.write(out, NetworkCode.NEW_USER_RESPONSE);
         Serializers.nullable(User.SERIALIZER).write(out, user);
+        logQueue.transactions.add("ADD-USER " + user.id.toString() + " " + user.name + " "+ user.creation.inMs());
       }
     });
 
@@ -330,6 +332,20 @@ public final class Server {
           long timeInMs = Long.parseLong(tokenizer.next());
           Time timeCreated = Time.fromMs(timeInMs);
           controller.newConversation(uuid, title, ownerUuid, timeCreated);
+        } else if (action.equals("ADD-USER")) {
+          Uuid uuid = Uuid.parse(tokenizer.next());
+          String userName = tokenizer.next();
+          long timeInMs = Long.parseLong(tokenizer.next());
+          Time timeCreated = Time.fromMs(timeInMs);
+          controller.newUser(uuid, userName, timeCreated);
+        } else if( action.equals( "ADD-MESSAGE")) {
+          Uuid uuid = Uuid.parse(tokenizer.next());
+          Uuid authorUuid =  Uuid.parse(tokenizer.next());
+          Uuid conversationUuid = Uuid.parse(tokenizer.next());
+          String content = tokenizer.next();
+          long timeInMs = Long.parseLong(tokenizer.next());
+          Time timeCreated = Time.fromMs(timeInMs);
+          controller.newMessage(uuid, authorUuid, conversationUuid, content, timeCreated);
         }
       }
     } catch(Exception e) {
