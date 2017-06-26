@@ -57,6 +57,6 @@ public interface BasicView {
   //
   //   Return all the interests objects.
   // TODO: uncomment when implemented in client View
-  //Collection<Interests> getInterests();
+  Collection<Interests> getInterests();
 
 }
