@@ -114,8 +114,8 @@ final class Controller implements BasicController {
     return response;
   }
 
-  //@Override
-  public Interests newInterests(Uuid userid) {
+  @Override
+  public Interests newInterest(Uuid userid, Uuid interests) {
 
     Interests response = null;
 
@@ -123,6 +123,7 @@ final class Controller implements BasicController {
 
       Serializers.INTEGER.write(connection.out(), NetworkCode.NEW_INTERESTS_REQUEST);
       Uuid.SERIALIZER.write(connection.out(), userid);
+      Uuid.SERIALIZER.write(connection.out(), interests);
 
       if (Serializers.INTEGER.read(connection.in()) == NetworkCode.NEW_INTERESTS_RESPONSE) {
         response = Serializers.nullable(Interests.SERIALIZER).read(connection.in());

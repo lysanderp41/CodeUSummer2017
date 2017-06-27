@@ -128,7 +128,6 @@ final class View implements BasicView {
     try (final Connection connection = source.connect()) {
 
       Serializers.INTEGER.write(connection.out(), NetworkCode.GET_INTERESTS_REQUEST);
-      Serializers.collection(Interests.SERIALIZER).write(connection.out(), interests);
 
       if (Serializers.INTEGER.read(connection.in()) == NetworkCode.GET_INTERESTS_RESPONSE) {
         interests.addAll(Serializers.collection(Interests.SERIALIZER).read(connection.in()));

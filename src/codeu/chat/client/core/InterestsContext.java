@@ -8,6 +8,7 @@ import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.Interests;
 import codeu.chat.util.Uuid;
 
+
 public final class InterestsContext {
     public final Interests interests;
     private final BasicView view;
@@ -17,5 +18,14 @@ public final class InterestsContext {
         this.interests = interests;
         this.view = view;
         this.controller = controller;
+    }
+    public InterestsContext (Interests interests){
+        this.interests = interests;
+        this.view = null;
+        this.controller = null;
+    }
+    public void addInterest(Uuid interest) {
+        controller.newInterest(interests.id,interest);
+
     }
 }
