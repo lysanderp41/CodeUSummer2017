@@ -58,6 +58,6 @@ public interface BasicController {
   //   successful, an Interests object will be returned representing the full
   //   state of the interests of the specified user on the server.
   // TODO: uncomment when method is added to user Controller
-  //Interests newInterest(Uuid userid, Uuid interest);
+  Interests newInterest(Uuid userid, Uuid interest);
 
 }
