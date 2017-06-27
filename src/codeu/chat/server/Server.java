@@ -235,7 +235,7 @@ public final class Server {
 
         final Uuid userid = Uuid.SERIALIZER.read(in);
 
-        final HashMap<Uuid, HashSet<ConversationHeader>> interestedUsers = new HashMap<Uuid, HashSet<ConversationHeader>>();
+        final HashMap<Uuid, Collection<ConversationHeader>> interestedUsers = new HashMap<Uuid, HashSet<ConversationHeader>>();
         final HashMap<Uuid, Integer> interestedConversations = new HashMap<Uuid, Integer>();
 
         final Interests interests = view.findInterests(userid);
