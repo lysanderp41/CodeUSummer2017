@@ -228,7 +228,7 @@ public final class Server {
 
         final Uuid userid = Uuid.SERIALIZER.read(in);
 
-        final HashMap<Uuid, HashSet<ConversationHeader>> interestedUsers = new HashMap<Uuid, HashSet<ConversationHeader>>();
+        final HashMap<Uuid, Collection<ConversationHeader>> interestedUsers = new HashMap<Uuid, HashSet<ConversationHeader>>();
         final HashMap<Uuid, Integer> interestedConversations = new HashMap<Uuid, Integer>();
 
         final Interests interests = view.findInterests(userid);
@@ -246,17 +246,17 @@ public final class Server {
             interestedUsers.put(owner, interestedConvo);
           }
 
-          if (uuids.contains(convo.id)) {
-            for (Message message = view.findMessage(view.getConversationPayload(convo.id).firstMessage);
-                message != null;
-                message = view.findMessage(message.next)) {
-              if (message.creation.compareTo(lastUpdate) >= 0) {
-                if (uuids.contains(message.author)) {
-                  HashSet<ConversationHeader> interestedConvo = interestedUsers.get(owner);
-                  interestedConvo = interestedConvo == null ? new HashSet<ConversationHeader>() : interestedConvo;
-                  interestedConvo.add(convo);
-                  interestedUsers.put(owner, interestedConvo);
-                }
+          for (Message message = view.findMessage(view.getConversationPayload(convo.id).firstMessage);
+            message != null;
+            message = view.findMessage(message.next)) {
+            if (message.creation.compareTo(lastUpdate) >= 0) {
+              if (uuids.contains(message.author)) {
+                HashSet<ConversationHeader> interestedConvo = interestedUsers.get(owner);
+                interestedConvo = interestedConvo == null ? new HashSet<ConversationHeader>() : interestedConvo;
+                interestedConvo.add(convo);
+                interestedUsers.put(owner, interestedConvo);
+              }
+              if (uuids.contains(convo.id)) {
                 Integer interestedMess = interestedConversations.get(convo.id);
                 interestedMess = interestedMess == null ? 0 : interestedMess + 1;
                 interestedConversations.put(convo.id, interestedMess);
