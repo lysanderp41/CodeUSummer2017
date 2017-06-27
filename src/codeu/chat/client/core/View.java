@@ -16,11 +16,16 @@ package codeu.chat.client.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import codeu.chat.common.ServerInfo;
 import codeu.chat.common.BasicView;
 import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.ConversationPayload;
+import codeu.chat.common.Interests;
 import codeu.chat.common.Message;
 import codeu.chat.common.NetworkCode;
 import codeu.chat.common.User;
@@ -116,6 +121,28 @@ final class View implements BasicView {
   }
 
   @Override
+  public Collection<Interests> getInterests() {
+
+    final Collection<Interests> interests = new ArrayList<>();
+
+    try (final Connection connection = source.connect()) {
+
+      Serializers.INTEGER.write(connection.out(), NetworkCode.GET_INTERESTS_REQUEST);
+
+      if (Serializers.INTEGER.read(connection.in()) == NetworkCode.GET_INTERESTS_RESPONSE) {
+        interests.addAll(Serializers.collection(Interests.SERIALIZER).read(connection.in()));
+      } else {
+        LOG.error("Response from server failed.");
+      }
+    } catch (Exception ex) {
+      System.out.println("ERROR: Exception during call on server. Check log for details.");
+      LOG.error(ex, "Exception during call on server.");
+    }
+
+    return interests;
+  }
+
+  @Override
   public Collection<Message> getMessages(Collection<Uuid> ids) {
 
     final Collection<Message> messages = new ArrayList<>();
@@ -136,6 +163,38 @@ final class View implements BasicView {
     }
 
     return messages;
+  }
+
+  public void getStatusUpdate(Uuid userid, HashMap<Uuid, Collection<ConversationHeader>> interestedUsers,
+   HashMap<Uuid, Integer> interestedConversations) {
+
+    try (final Connection connection = source.connect()) {
+      Serializers.INTEGER.write(connection.out(), NetworkCode.STATUS_UPDATE_REQUEST);
+      System.out.println(userid.toString());
+      Uuid.SERIALIZER.write(connection.out(), userid);
+      if (Serializers.INTEGER.read(connection.in()) == NetworkCode.STATUS_UPDATE_RESPONSE) {
+        Collection<Uuid> keys = Serializers.collection(Uuid.SERIALIZER).read(connection.in());
+        Collection<Collection<ConversationHeader>> values = Serializers.collection(Serializers.collection(ConversationHeader.SERIALIZER)).read(connection.in());
+        Iterator<Uuid> i1 = keys.iterator();
+        Iterator<Collection<ConversationHeader>> i2 = values.iterator();
+        while (i1.hasNext() && i2.hasNext()) {
+          interestedUsers.put(i1.next(), i2.next());
+        }
+
+        keys = Serializers.collection(Uuid.SERIALIZER).read(connection.in());
+        Collection<Integer> values2 = Serializers.collection(Serializers.INTEGER).read(connection.in());
+        i1 = keys.iterator();
+        Iterator<Integer> i3 = values2.iterator();
+        while (i1.hasNext() && i3.hasNext()) {
+          interestedConversations.put(i1.next(), i3.next());
+        }
+      } else {
+        LOG.error("Response from server failed.");
+      }
+    } catch (Exception ex) {
+      System.out.println("ERROR: Exception during call on server. Check log for details.");
+      LOG.error(ex, "Exception during call on server.");
+    }
   }
 
   //get the info object from the server 

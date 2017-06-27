@@ -14,22 +14,15 @@
 
 package codeu.chat.client.commandline;
 
-import java.time.format.DateTimeFormatter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Stack;
-
-import codeu.chat.client.core.Context;
-import codeu.chat.client.core.ConversationContext;
-import codeu.chat.client.core.MessageContext;
-import codeu.chat.client.core.UserContext;
-import codeu.chat.util.Tokenizer;
+import codeu.chat.client.core.*;
+import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.ServerInfo;
 import codeu.chat.util.Time;
+import codeu.chat.util.Tokenizer;
+import codeu.chat.util.Uuid;
+
+import java.io.IOException;
+import java.util.*;
 
 
 public final class Chat {
@@ -260,6 +253,8 @@ public final class Chat {
         System.out.println("    List all conversations that the current user can interact with.");
         System.out.println("  c-add <title>");
         System.out.println("    Add a new conversation with the given title and join it as the current user.");
+        System.out.println("  i-add <id>");
+        System.out.println("    Add a new interest with the given id ");
         System.out.println("  c-join <title>");
         System.out.println("    Join the conversation as the current user.");
         System.out.println("  info");
@@ -310,6 +305,30 @@ public final class Chat {
       }
     });
 
+    // I-ADD (add interests)
+    //
+    // Add a command that will add a new interest when the user
+    // enters "i-add" while on the user panel.
+    //
+    panel.register("i-add", new Panel.Command() {
+      @Override
+      public void invoke(List<String> args) {
+        try {
+          final Uuid id = args.size() > 0 ? Uuid.parse(args.get(0)) : Uuid.NULL;
+          if (args.size() > 0) {
+            if (id == null) {
+              System.out.println("ERROR: Failed to add new interest");
+            } else {
+              user.addInterest(id);
+            }
+          } else {
+            System.out.println("ERROR: Missing <title>");
+          }
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    });
     // C-JOIN (join conversation)
     //
     // Add a command that will joing a conversation when the user enters
@@ -340,6 +359,41 @@ public final class Chat {
           }
         }
         return null;
+      }
+    });
+
+    // STATUS UPDATE (status update)
+    //
+    // Add a command that will print all of the updated things that the
+    // user is interested in.
+    //
+    panel.register("status-update", new Panel.Command() {
+      @Override
+      public void invoke(List<String> args) {
+        HashMap<Uuid, Collection<ConversationHeader>> interestedUsers = new HashMap<Uuid, Collection<ConversationHeader>>();
+        HashMap<Uuid, Integer> interestedConversations = new HashMap<Uuid, Integer>();
+        user.getStatusUpdate(interestedUsers, interestedConversations);
+        for (final Map.Entry<Uuid, Collection<ConversationHeader>> entry : interestedUsers.entrySet()) {
+          Uuid userid = entry.getKey();
+          Collection<ConversationHeader> conversations = entry.getValue();
+          System.out.format(
+              "Interested user's uuid:%s\n\tNew/Updated Conversations:\n",
+              userid);
+          for (ConversationHeader conversation : conversations) {
+            System.out.format(
+              "\t\tCONVERSATION %s (UUID:%s)\n",
+              conversation.title,
+              conversation.id);
+          }
+        }
+        for (final Map.Entry<Uuid, Integer> entry : interestedConversations.entrySet()) {
+          Uuid conversationid = entry.getKey();
+          Integer newMessages = entry.getValue();
+          System.out.format(
+              "Interested conversation's uuid:%s\n\tNumber of new messages:%s\n",
+              conversationid,
+              newMessages);
+        }
       }
     });
 
