@@ -271,6 +271,7 @@ public final class Server {
         Serializers.collection(Serializers.collection(ConversationHeader.SERIALIZER)).write(out, interestedUsers.values());
         Serializers.collection(Uuid.SERIALIZER).write(out, interestedConversations.keySet());
         Serializers.collection(Serializers.INTEGER).write(out, interestedConversations.values());
+        logQueue.transactions.add("STATUS-UPDATE " + userid.toString() + " " + interests.lastStatusUpdate.inMs());
       }
     });this.timeline.scheduleNow(new Runnable() {
       @Override
@@ -424,6 +425,11 @@ public final class Server {
                     long timeInMs = Long.parseLong(tokenizer.next());
                     Time timeCreated = Time.fromMs(timeInMs);
                     controller.newInterest(user, interest, timeCreated);
+                } else if (action.equals("STATUS-UPDATE")) {
+                    Uuid userId = Uuid.parse(tokenizer.next());
+                    long timeInMs = Long.parseLong(tokenizer.next());
+                    Time timeCreated = Time.fromMs(timeInMs);
+                    view.findInterests(userId).lastStatusUpdate = timeCreated;
                 }
             }
         } catch (Exception e) {
