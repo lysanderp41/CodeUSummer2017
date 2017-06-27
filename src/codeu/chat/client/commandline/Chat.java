@@ -17,23 +17,25 @@ package codeu.chat.client.commandline;
 import java.time.format.DateTimeFormatter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Stack;
 
+
 import codeu.chat.client.core.Context;
 import codeu.chat.client.core.ConversationContext;
+import codeu.chat.client.core.InterestsContext;
 import codeu.chat.client.core.MessageContext;
 import codeu.chat.client.core.UserContext;
 import codeu.chat.util.Tokenizer;
 import codeu.chat.common.ConversationHeader;
+import codeu.chat.common.Interests;
 import codeu.chat.common.ServerInfo;
 import codeu.chat.util.Uuid;
 import codeu.chat.util.Time;
+import codeu.chat.util.Uuid;
 
 
 public final class Chat {
@@ -264,6 +266,8 @@ public final class Chat {
         System.out.println("    List all conversations that the current user can interact with.");
         System.out.println("  c-add <title>");
         System.out.println("    Add a new conversation with the given title and join it as the current user.");
+        System.out.println("  i-add <id>");
+        System.out.println("    Add a new interest with the given id ");
         System.out.println("  c-join <title>");
         System.out.println("    Join the conversation as the current user.");
         System.out.println("  info");
@@ -314,6 +318,31 @@ public final class Chat {
       }
     });
 
+    // I-ADD (add interests)
+    //
+    // Add a command that will add a new interest when the user
+    // enters "i-add" while on the user panel.
+    //
+    panel.register("i-add", new Panel.Command() {
+      @Override
+      public void invoke(List<String> args) {
+        try {
+          final Uuid id = args.size() > 0 ? Uuid.parse(args.get(0)) : Uuid.NULL;
+          if (args.size() > 0) {
+            if (id == null) {
+              System.out.println("ERROR: Failed to add new interest");
+            } else {
+              final InterestsContext interests = new InterestsContext(user.getUserInterests());
+              interests.addInterest(id);
+            }
+          } else {
+            System.out.println("ERROR: Missing <title>");
+          }
+        } catch (Exception e) {
+          System.out.print(e);
+        }
+      }
+    });
     // C-JOIN (join conversation)
     //
     // Add a command that will joing a conversation when the user enters

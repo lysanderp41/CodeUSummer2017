@@ -56,7 +56,7 @@ public final class Controller implements RawController, BasicController {
   }
 
   // TODO: uncomment when method is added to user controller
-  //@Override
+  @Override
   public Interests newInterest(Uuid userid, Uuid interest) {
     return newInterest(userid, interest, Time.now());
   }

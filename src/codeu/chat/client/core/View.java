@@ -25,6 +25,7 @@ import codeu.chat.common.ServerInfo;
 import codeu.chat.common.BasicView;
 import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.ConversationPayload;
+import codeu.chat.common.Interests;
 import codeu.chat.common.Message;
 import codeu.chat.common.NetworkCode;
 import codeu.chat.common.User;
@@ -117,6 +118,28 @@ final class View implements BasicView {
     }
 
     return conversations;
+  }
+
+  @Override
+  public Collection<Interests> getInterests() {
+
+    final Collection<Interests> interests = new ArrayList<>();
+
+    try (final Connection connection = source.connect()) {
+
+      Serializers.INTEGER.write(connection.out(), NetworkCode.GET_INTERESTS_REQUEST);
+
+      if (Serializers.INTEGER.read(connection.in()) == NetworkCode.GET_INTERESTS_RESPONSE) {
+        interests.addAll(Serializers.collection(Interests.SERIALIZER).read(connection.in()));
+      } else {
+        LOG.error("Response from server failed.");
+      }
+    } catch (Exception ex) {
+      System.out.println("ERROR: Exception during call on server. Check log for details.");
+      LOG.error(ex, "Exception during call on server.");
+    }
+
+    return interests;
   }
 
   @Override
