@@ -274,7 +274,10 @@ public final class Server {
 
         interests.lastStatusUpdate = Time.now();
         Serializers.INTEGER.write(out, NetworkCode.STATUS_UPDATE_RESPONSE);
-        Time.SERIALIZER.write(out, info.startTime);
+        Serializers.collection(Uuid.SERIALIZER).write(out, interestedUsers.keySet());
+        Serializers.collection(Serializers.collection(ConversationHeader.SERIALIZER)).write(out, interestedUsers.values());
+        Serializers.collection(Uuid.SERIALIZER).write(out, interestedConversations.keySet());
+        Serializers.collection(Serializers.INTEGER).write(out, interestedConversations.values());
       }
     });
 
