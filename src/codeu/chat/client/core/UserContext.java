@@ -16,7 +16,12 @@ package codeu.chat.client.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
+import codeu.chat.client.core.View;
 import codeu.chat.common.BasicController;
 import codeu.chat.common.BasicView;
 import codeu.chat.common.ConversationHeader;
@@ -52,5 +57,10 @@ public final class UserContext {
     }
 
     return all;
+  }
+
+  public void getStatusUpdate(HashMap<Uuid, Collection<ConversationHeader>> interestedUsers,
+   HashMap<Uuid, Integer> interestedConversations) {
+    ((View)view).getStatusUpdate(user.id, interestedUsers, interestedConversations);
   }
 }

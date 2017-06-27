@@ -17,8 +17,10 @@ package codeu.chat.client.commandline;
 import java.time.format.DateTimeFormatter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Stack;
@@ -28,7 +30,9 @@ import codeu.chat.client.core.ConversationContext;
 import codeu.chat.client.core.MessageContext;
 import codeu.chat.client.core.UserContext;
 import codeu.chat.util.Tokenizer;
+import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.ServerInfo;
+import codeu.chat.util.Uuid;
 import codeu.chat.util.Time;
 
 
@@ -340,6 +344,42 @@ public final class Chat {
           }
         }
         return null;
+      }
+    });
+
+    // STATUS UPDATE (status update)
+    //
+    // Add a command that will print all of the updated things that the
+    // user is interested in.
+    //
+    panel.register("status-update", new Panel.Command() {
+      @Override
+      public void invoke(List<String> args) {
+        HashMap<Uuid, Collection<ConversationHeader>> interestedUsers = new HashMap<Uuid, HashSet<ConversationHeader>>();
+        HashMap<Uuid, Integer> interestedConversations = new HashMap<Uuid, Integer>();
+        user.getStatusUpdate(interestedUsers, interestedConversations);
+
+        for (final Map.Entry<Uuid, Collection<ConversationHeader>> entry : interestedUsers.entrySet()) {
+          Uuid userid = entry.getKey();
+          Collection<ConversationHeader> conversations = entry.getValue();
+          System.out.format(
+              "Interested user's uuid:%s\n\tNew/Updated Conversations:\n",
+              userid);
+          for (ConversationHeader conversation : conversations) {
+            System.out.format(
+              "\t\tCONVERSATION %s (UUID:%s)\n",
+              conversation.title,
+              conversation.id);
+          }
+        }
+        for (final Map.Entry<Uuid, Integer> entry : interestedConversations.entrySet()) {
+          Uuid conversationid = entry.getKey();
+          Integer newMessages = entry.getValue();
+          System.out.format(
+              "Interested conversation's uuid:%s\n\tNumber of new messages:%s\n",
+              conversationid,
+              newMessages);
+        }
       }
     });
 

@@ -16,6 +16,10 @@ package codeu.chat.client.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import codeu.chat.common.ServerInfo;
 import codeu.chat.common.BasicView;
@@ -138,8 +142,7 @@ final class View implements BasicView {
     return messages;
   }
 
-  @Override
-  public void getStatusUpdate(Uuid, userid, HashMap<Uuid, HashSet<ConversationHeader>> interestedUsers,
+  public void getStatusUpdate(Uuid userid, HashMap<Uuid, Collection<ConversationHeader>> interestedUsers,
    HashMap<Uuid, Integer> interestedConversations) {
 
     try (final Connection connection = source.connect()) {
@@ -148,20 +151,20 @@ final class View implements BasicView {
       Serializers.nullable(Uuid.SERIALIZER).write(connection.out(), userid);
 
       if (Serializers.INTEGER.read(connection.in()) == NetworkCode.GET_MESSAGES_BY_ID_RESPONSE) {
-        Set<Uuid> keys = Serializers.collection(Uuid.SERIALIZER).read(connection.in());
-        Set<Set<ConversationHeader>> values = Serializers.collection(Serializers.collection(ConversationHeader.SERIALIZER)).read(connection.in());
-        Iterator<String> i1 = keys.iterator();
-        Iterator<String> i2 = values.iterator();
+        Collection<Uuid> keys = Serializers.collection(Uuid.SERIALIZER).read(connection.in());
+        Collection<Collection<ConversationHeader>> values = Serializers.collection(Serializers.collection(ConversationHeader.SERIALIZER)).read(connection.in());
+        Iterator<Uuid> i1 = keys.iterator();
+        Iterator<Collection<ConversationHeader>> i2 = values.iterator();
         while (i1.hasNext() && i2.hasNext()) {
           interestedUsers.put(i1.next(), i2.next());
         }
 
         keys = Serializers.collection(Uuid.SERIALIZER).read(connection.in());
-        Set<Integer> values2 = Serializers.collection(Serializers.INTEGER).read(connection.in());
-        Iterator<String> i1 = keys.iterator();
-        Iterator<String> i2 = values.iterator();
-        while (i1.hasNext() && i2.hasNext()) {
-          interestedConversations.put(i1.next(), i2.next());
+        Collection<Integer> values2 = Serializers.collection(Serializers.INTEGER).read(connection.in());
+        i1 = keys.iterator();
+        Iterator<Integer> i3 = values2.iterator();
+        while (i1.hasNext() && i3.hasNext()) {
+          interestedConversations.put(i1.next(), i3.next());
         }
       } else {
         LOG.error("Response from server failed.");
@@ -170,8 +173,6 @@ final class View implements BasicView {
       System.out.println("ERROR: Exception during call on server. Check log for details.");
       LOG.error(ex, "Exception during call on server.");
     }
-
-    return messages;
   }
 
   //get the info object from the server 

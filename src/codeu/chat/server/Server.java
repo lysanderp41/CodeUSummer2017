@@ -247,7 +247,7 @@ public final class Server {
         for (ConversationHeader convo : conversations) {
           Uuid owner = convo.owner;
           if (convo.creation.compareTo(lastUpdate) >= 0 && uuids.contains(owner)) {
-            HashSet<ConversationHeader> interestedConvo = interestedUsers.get(owner);
+            Collection<ConversationHeader> interestedConvo = interestedUsers.get(owner);
             interestedConvo = interestedConvo == null ? new HashSet<ConversationHeader>() : interestedConvo;
             interestedConvo.add(convo);
             interestedUsers.put(owner, interestedConvo);
@@ -258,7 +258,7 @@ public final class Server {
             message = view.findMessage(message.next)) {
             if (message.creation.compareTo(lastUpdate) >= 0) {
               if (uuids.contains(message.author)) {
-                HashSet<ConversationHeader> interestedConvo = interestedUsers.get(owner);
+                Collection<ConversationHeader> interestedConvo = interestedUsers.get(owner);
                 interestedConvo = interestedConvo == null ? new HashSet<ConversationHeader>() : interestedConvo;
                 interestedConvo.add(convo);
                 interestedUsers.put(owner, interestedConvo);
