@@ -50,9 +50,6 @@ public final class Context {
     }
     return users;
   }
-  public Interests getInterests (){
-    return view.getInterests();
-  }
   public ServerInfo getVersion() {
     return view.getVersion();
   }

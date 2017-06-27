@@ -18,4 +18,12 @@ public final class InterestsContext {
         this.view = view;
         this.controller = controller;
     }
+    public InterestsContext (Interests interests){
+        this.interests = interests;
+        this.view = null;
+        this.controller = null;
+    }
+    public void addInterest(Uuid interest) {
+        interests.interests.add(interest);
+    }
 }

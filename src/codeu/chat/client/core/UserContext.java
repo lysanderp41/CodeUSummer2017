@@ -20,6 +20,7 @@ import java.util.Collection;
 import codeu.chat.common.BasicController;
 import codeu.chat.common.BasicView;
 import codeu.chat.common.ConversationHeader;
+import codeu.chat.common.Interests;
 import codeu.chat.common.User;
 import codeu.chat.util.Uuid;
 
@@ -40,6 +41,14 @@ public final class UserContext {
     return conversation == null ?
         null :
         new ConversationContext(user, conversation, view, controller);
+  }
+  // returns interests that pertains to the user
+  public Interests getUserInterests(){
+    for(Interests interests : view.getInterests()){
+      if(user.id.equals(interests.id)){
+        return interests;
+      }
+    }return null;
   }
 
   public Iterable<ConversationContext> conversations() {

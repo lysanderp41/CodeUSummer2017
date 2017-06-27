@@ -28,6 +28,7 @@ public final class Interests {
 
       return new Interests(
           Serializers.collection(Uuid.SERIALIZER).read(in),
+          Uuid.SERIALIZER.read(in),
           Time.SERIALIZER.read(in),
           Time.SERIALIZER.read(in)
       );
@@ -36,12 +37,14 @@ public final class Interests {
   };
 
   public final Collection<Uuid> interests;
+  public final Uuid id;
   public final Time lastStatusUpdate;
   public final Time creation;
 
-  public Interests(Collection<Uuid> interests, Time lastStatusUpdate, Time creation) {
+  public Interests(Collection<Uuid> interests, Uuid id, Time lastStatusUpdate, Time creation) {
 
     this.interests = interests;
+    this.id = id;
     this.lastStatusUpdate = lastStatusUpdate;
     this.creation = creation;
 
