@@ -138,6 +138,42 @@ final class View implements BasicView {
     return messages;
   }
 
+  @Override
+  public void getStatusUpdate(Uuid, userid, HashMap<Uuid, HashSet<ConversationHeader>> interestedUsers,
+   HashMap<Uuid, Integer> interestedConversations) {
+
+    try (final Connection connection = source.connect()) {
+
+      Serializers.INTEGER.write(connection.out(), NetworkCode.STATUS_UPDATE_REQUEST);
+      Serializers.nullable(Uuid.SERIALIZER).write(connection.out(), userid);
+
+      if (Serializers.INTEGER.read(connection.in()) == NetworkCode.GET_MESSAGES_BY_ID_RESPONSE) {
+        Set<Uuid> keys = Serializers.collection(Uuid.SERIALIZER).read(connection.in());
+        Set<Set<ConversationHeader>> values = Serializers.collection(Serializers.collection(ConversationHeader.SERIALIZER)).read(connection.in());
+        Iterator<String> i1 = keys.iterator();
+        Iterator<String> i2 = values.iterator();
+        while (i1.hasNext() && i2.hasNext()) {
+          interestedUsers.put(i1.next(), i2.next());
+        }
+
+        keys = Serializers.collection(Uuid.SERIALIZER).read(connection.in());
+        Set<Integer> values2 = Serializers.collection(Serializers.INTEGER).read(connection.in());
+        Iterator<String> i1 = keys.iterator();
+        Iterator<String> i2 = values.iterator();
+        while (i1.hasNext() && i2.hasNext()) {
+          interestedConversations.put(i1.next(), i2.next());
+        }
+      } else {
+        LOG.error("Response from server failed.");
+      }
+    } catch (Exception ex) {
+      System.out.println("ERROR: Exception during call on server. Check log for details.");
+      LOG.error(ex, "Exception during call on server.");
+    }
+
+    return messages;
+  }
+
   //get the info object from the server 
   public ServerInfo getVersion() {
 
