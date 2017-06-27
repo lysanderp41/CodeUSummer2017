@@ -16,10 +16,16 @@ package codeu.chat.client.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
+import codeu.chat.client.core.View;
 import codeu.chat.common.BasicController;
 import codeu.chat.common.BasicView;
 import codeu.chat.common.ConversationHeader;
+import codeu.chat.common.Interests;
 import codeu.chat.common.User;
 import codeu.chat.util.Uuid;
 
@@ -41,6 +47,19 @@ public final class UserContext {
         null :
         new ConversationContext(user, conversation, view, controller);
   }
+  // returns interests that pertains to the user
+  public InterestsContext getUserInterests(){
+    for(Interests interests : view.getInterests()){
+      if(user.id.equals(interests.id)){
+        return new InterestsContext(interests,view,controller);
+      }
+    }return null;
+  }
+
+  public void addInterest(Uuid interest) {
+    controller.newInterest(user.id,interest);
+
+  }
 
   public Iterable<ConversationContext> conversations() {
 
@@ -52,5 +71,10 @@ public final class UserContext {
     }
 
     return all;
+  }
+
+  public void getStatusUpdate(HashMap<Uuid, Collection<ConversationHeader>> interestedUsers,
+   HashMap<Uuid, Integer> interestedConversations) {
+    ((View)view).getStatusUpdate(user.id, interestedUsers, interestedConversations);
   }
 }

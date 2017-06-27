@@ -138,7 +138,7 @@ public final class Model {
     }
     HashSet<Uuid> set = new HashSet<Uuid>();
     set.add(interest);
-    interestsByUserId.insert(userid, new Interests(set, Time.now(), Time.now()));
+    interestsByUserId.insert(userid, new Interests(set, userid, Time.now(), Time.now()));
   }
 
   public StoreAccessor<Uuid, Interests> interestsByUserId() {
