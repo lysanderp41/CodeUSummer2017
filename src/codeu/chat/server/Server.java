@@ -129,6 +129,8 @@ public final class Server {
 
         Serializers.INTEGER.write(out, NetworkCode.NEW_INTERESTS_RESPONSE);
         Serializers.nullable(Interests.SERIALIZER).write(out, interests);
+
+        logQueue.transactions.add("ADD-INTEREST " + userid.toString() + " " + interest.toString() + " " + interests.creation.inMs());
       }
     });
 
@@ -225,9 +227,7 @@ public final class Server {
     this.commands.put(NetworkCode.STATUS_UPDATE_REQUEST, new Command() {
       @Override
       public void onMessage(InputStream in, OutputStream out) throws IOException {
-
         final Uuid userid = Uuid.SERIALIZER.read(in);
-
         final HashMap<Uuid, Collection<ConversationHeader>> interestedUsers = new HashMap<Uuid, Collection<ConversationHeader>>();
         final HashMap<Uuid, Integer> interestedConversations = new HashMap<Uuid, Integer>();
 
@@ -245,7 +245,6 @@ public final class Server {
             interestedConvo.add(convo);
             interestedUsers.put(owner, interestedConvo);
           }
-
           for (Message message = view.findMessage(view.getConversationPayload(convo.id).firstMessage);
             message != null;
             message = view.findMessage(message.next)) {
@@ -258,7 +257,7 @@ public final class Server {
               }
               if (uuids.contains(convo.id)) {
                 Integer interestedMess = interestedConversations.get(convo.id);
-                interestedMess = interestedMess == null ? 0 : interestedMess + 1;
+                interestedMess = interestedMess == null ? 1 : interestedMess + 1;
                 interestedConversations.put(convo.id, interestedMess);
               }
             }

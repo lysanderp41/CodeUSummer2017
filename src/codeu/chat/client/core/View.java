@@ -169,11 +169,10 @@ final class View implements BasicView {
    HashMap<Uuid, Integer> interestedConversations) {
 
     try (final Connection connection = source.connect()) {
-
       Serializers.INTEGER.write(connection.out(), NetworkCode.STATUS_UPDATE_REQUEST);
-      Serializers.nullable(Uuid.SERIALIZER).write(connection.out(), userid);
-
-      if (Serializers.INTEGER.read(connection.in()) == NetworkCode.GET_MESSAGES_BY_ID_RESPONSE) {
+      System.out.println(userid.toString());
+      Uuid.SERIALIZER.write(connection.out(), userid);
+      if (Serializers.INTEGER.read(connection.in()) == NetworkCode.STATUS_UPDATE_RESPONSE) {
         Collection<Uuid> keys = Serializers.collection(Uuid.SERIALIZER).read(connection.in());
         Collection<Collection<ConversationHeader>> values = Serializers.collection(Serializers.collection(ConversationHeader.SERIALIZER)).read(connection.in());
         Iterator<Uuid> i1 = keys.iterator();

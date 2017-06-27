@@ -24,8 +24,4 @@ public final class InterestsContext {
         this.view = null;
         this.controller = null;
     }
-    public void addInterest(Uuid interest) {
-        controller.newInterest(interests.id,interest);
-
-    }
 }

@@ -48,12 +48,17 @@ public final class UserContext {
         new ConversationContext(user, conversation, view, controller);
   }
   // returns interests that pertains to the user
-  public Interests getUserInterests(){
+  public InterestsContext getUserInterests(){
     for(Interests interests : view.getInterests()){
       if(user.id.equals(interests.id)){
-        return interests;
+        return new InterestsContext(interests,view,controller);
       }
     }return null;
+  }
+
+  public void addInterest(Uuid interest) {
+    controller.newInterest(user.id,interest);
+
   }
 
   public Iterable<ConversationContext> conversations() {

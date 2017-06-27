@@ -319,14 +319,13 @@ public final class Chat {
             if (id == null) {
               System.out.println("ERROR: Failed to add new interest");
             } else {
-              final InterestsContext interests = new InterestsContext(user.getUserInterests());
-              interests.addInterest(id);
+              user.addInterest(id);
             }
           } else {
             System.out.println("ERROR: Missing <title>");
           }
         } catch (Exception e) {
-          System.out.print(e);
+          e.printStackTrace();
         }
       }
     });
@@ -374,7 +373,6 @@ public final class Chat {
         HashMap<Uuid, Collection<ConversationHeader>> interestedUsers = new HashMap<Uuid, Collection<ConversationHeader>>();
         HashMap<Uuid, Integer> interestedConversations = new HashMap<Uuid, Integer>();
         user.getStatusUpdate(interestedUsers, interestedConversations);
-
         for (final Map.Entry<Uuid, Collection<ConversationHeader>> entry : interestedUsers.entrySet()) {
           Uuid userid = entry.getKey();
           Collection<ConversationHeader> conversations = entry.getValue();
