@@ -21,7 +21,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 import codeu.chat.common.ServerInfo;
 import codeu.chat.common.ConversationHeader;
@@ -223,10 +227,66 @@ public final class Server {
             }
         });
 
-        this.timeline.scheduleNow(new Runnable() {
-            @Override
-            public void run() {
-                try {
+    // Status Update - A client wants to get an update on all the things they're interested in.
+    // writes the following items:
+    //   1. The updates about the users being followed - A HashMap of key-value pairs where
+    //      the key is the userid and the value is a set of conversations
+    //   2. The updates about the conversations being followed - A HashMap of key-value pairs
+    //      where the key is the conversation id and the values is a set of messages
+    this.commands.put(NetworkCode.STATUS_UPDATE_REQUEST, new Command() {
+      @Override
+      public void onMessage(InputStream in, OutputStream out) throws IOException {
+
+        final Uuid userid = Uuid.SERIALIZER.read(in);
+
+        final HashMap<Uuid, HashSet<ConversationHeader>> interestedUsers = new HashMap<Uuid, HashSet<ConversationHeader>>();
+        final HashMap<Uuid, Integer> interestedConversations = new HashMap<Uuid, Integer>();
+
+        final Interests interests = view.findInterests(userid);
+        final Collection<Uuid> uuids = interests.interests;
+        final Time lastUpdate = interests.lastStatusUpdate;
+
+        final Collection<ConversationHeader> conversations = view.getConversations();
+
+        for (ConversationHeader convo : conversations) {
+          Uuid owner = convo.owner;
+          if (convo.creation.compareTo(lastUpdate) >= 0 && uuids.contains(owner)) {
+            HashSet<ConversationHeader> interestedConvo = interestedUsers.get(owner);
+            interestedConvo = interestedConvo == null ? new HashSet<ConversationHeader>() : interestedConvo;
+            interestedConvo.add(convo);
+            interestedUsers.put(owner, interestedConvo);
+          }
+
+          if (uuids.contains(convo.id)) {
+            for (Message message = view.findMessage(view.getConversationPayload(convo.id).firstMessage);
+                message != null;
+                message = view.findMessage(message.next)) {
+              if (message.creation.compareTo(lastUpdate) >= 0) {
+                if (uuids.contains(message.author)) {
+                  HashSet<ConversationHeader> interestedConvo = interestedUsers.get(owner);
+                  interestedConvo = interestedConvo == null ? new HashSet<ConversationHeader>() : interestedConvo;
+                  interestedConvo.add(convo);
+                  interestedUsers.put(owner, interestedConvo);
+                }
+                Integer interestedMess = interestedConversations.get(convo.id);
+                interestedMess = interestedMess == null ? 0 : interestedMess + 1;
+                interestedConversations.put(convo.id, interestedMess);
+              }
+            }
+          }
+        }
+
+        interests.lastStatusUpdate = Time.now();
+        Serializers.INTEGER.write(out, NetworkCode.STATUS_UPDATE_RESPONSE);
+        Serializers.collection(Uuid.SERIALIZER).write(out, interestedUsers.keySet());
+        Serializers.collection(Serializers.collection(ConversationHeader.SERIALIZER)).write(out, interestedUsers.values());
+        Serializers.collection(Uuid.SERIALIZER).write(out, interestedConversations.keySet());
+        Serializers.collection(Serializers.INTEGER).write(out, interestedConversations.values());
+      }
+    });this.timeline.scheduleNow(new Runnable() {
+      @Override
+      public void run() {
+        try {
 
                     LOG.info("Reading update from relay...");
 
