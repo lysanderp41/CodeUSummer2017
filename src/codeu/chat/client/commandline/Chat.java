@@ -355,7 +355,7 @@ public final class Chat {
     panel.register("status-update", new Panel.Command() {
       @Override
       public void invoke(List<String> args) {
-        HashMap<Uuid, Collection<ConversationHeader>> interestedUsers = new HashMap<Uuid, HashSet<ConversationHeader>>();
+        HashMap<Uuid, Collection<ConversationHeader>> interestedUsers = new HashMap<Uuid, Collection<ConversationHeader>>();
         HashMap<Uuid, Integer> interestedConversations = new HashMap<Uuid, Integer>();
         user.getStatusUpdate(interestedUsers, interestedConversations);
 

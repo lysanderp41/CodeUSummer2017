@@ -235,14 +235,14 @@ public final class Server {
 
         final Uuid userid = Uuid.SERIALIZER.read(in);
 
-        final HashMap<Uuid, Collection<ConversationHeader>> interestedUsers = new HashMap<Uuid, HashSet<ConversationHeader>>();
+        final HashMap<Uuid, Collection<ConversationHeader>> interestedUsers = new HashMap<Uuid, Collection<ConversationHeader>>();
         final HashMap<Uuid, Integer> interestedConversations = new HashMap<Uuid, Integer>();
 
         final Interests interests = view.findInterests(userid);
         final Collection<Uuid> uuids = interests.interests;
         final Time lastUpdate = interests.lastStatusUpdate;
 
-        final Collection<ConversationHeader> conversations = view.getConversations();
+        final Collection<ConversationHeader> conversations = new HashSet<ConversationHeader>(view.getConversations());
 
         for (ConversationHeader convo : conversations) {
           Uuid owner = convo.owner;
