@@ -1,9 +1,5 @@
 package codeu.chat.server;
 
-
-
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
-
 import java.io.*;
 import java.util.TimerTask;
 import java.util.ArrayDeque;
@@ -12,14 +8,14 @@ import java.util.Timer;
 /**
  * Created by Lysander on 6/23/17.
  */
-public class LogQueue {
-    File transactionLog;
-    ArrayDeque<String> transactions;
-    Timer timer;
-    BufferedWriter out;
+class LogQueue {
+    private File transactionLog;
+    private ArrayDeque<String> transactions;
+    private Timer timer;
+    private BufferedWriter out;
 
     //checks to see if there is a transaction waiting in the queue and writes it to the file
-    TimerTask writeTransaction;
+    private TimerTask writeTransaction;
 
     public LogQueue () {
         transactions = new ArrayDeque<>();
@@ -37,16 +33,24 @@ public class LogQueue {
         writeTransaction = new TimerTask() {
             @Override
             public void run() {
-                if (!transactions.isEmpty()) {
+                while (!transactions.isEmpty()) {
                     try {
                         out.write(transactions.poll() + "\n");
-                        out.flush();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
+                try {
+                    out.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         };
         timer.scheduleAtFixedRate(writeTransaction, 1, 100);
+    }
+
+    ArrayDeque<String> getTransactions() {
+        return transactions;
     }
 }
