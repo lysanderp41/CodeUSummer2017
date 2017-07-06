@@ -253,7 +253,7 @@ public final class Server {
                 Collection<ConversationHeader> interestedConvo = interestedUsers.get(owner);
                 interestedConvo = interestedConvo == null ? new HashSet<ConversationHeader>() : interestedConvo;
                 interestedConvo.add(convo);
-                interestedUsers.put(owner, interestedConvo);
+                interestedUsers.put(message.author, interestedConvo);
               }
               if (uuids.contains(convo.id)) {
                 Integer interestedMess = interestedConversations.get(convo.id);
