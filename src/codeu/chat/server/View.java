@@ -74,8 +74,7 @@ public final class View implements BasicView, SinglesView {
     return intersect(model.messageById(), ids);
   }
 
-  // TODO: uncomment when implemented in client View
-  //@Override
+  @Override
   public Collection<Interests> getInterests() {
     return all(model.interestsByUserId());
   }
@@ -89,8 +88,7 @@ public final class View implements BasicView, SinglesView {
   @Override
   public Message findMessage(Uuid id) { return model.messageById().first(id); }
 
-  // TODO: uncomment when implemented in client View
-  //@Override
+  @Override
   public Interests findInterests(Uuid userid) { return model.interestsByUserId().first(userid); }
 
   private static <S,T> Collection<T> all(StoreAccessor<S,T> store) {

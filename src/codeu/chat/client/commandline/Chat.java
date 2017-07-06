@@ -370,14 +370,14 @@ public final class Chat {
     panel.register("status-update", new Panel.Command() {
       @Override
       public void invoke(List<String> args) {
-        HashMap<Uuid, Collection<ConversationHeader>> interestedUsers = new HashMap<Uuid, Collection<ConversationHeader>>();
-        HashMap<Uuid, Integer> interestedConversations = new HashMap<Uuid, Integer>();
-        user.getStatusUpdate(interestedUsers, interestedConversations);
-        for (final Map.Entry<Uuid, Collection<ConversationHeader>> entry : interestedUsers.entrySet()) {
+        HashMap<Uuid, Collection<ConversationHeader>> usersOfInterest = new HashMap<Uuid, Collection<ConversationHeader>>();
+        HashMap<Uuid, Integer> conversationsOfInterest = new HashMap<Uuid, Integer>();
+        user.getStatusUpdate(usersOfInterest, conversationsOfInterest);
+        for (final Map.Entry<Uuid, Collection<ConversationHeader>> entry : usersOfInterest.entrySet()) {
           Uuid userid = entry.getKey();
           Collection<ConversationHeader> conversations = entry.getValue();
           System.out.format(
-              "Interested user's uuid:%s\n\tNew/Updated Conversations:\n",
+              "User of interest's uuid:%s\n\tNew/Updated Conversations:\n",
               userid);
           for (ConversationHeader conversation : conversations) {
             System.out.format(
@@ -386,11 +386,11 @@ public final class Chat {
               conversation.id);
           }
         }
-        for (final Map.Entry<Uuid, Integer> entry : interestedConversations.entrySet()) {
+        for (final Map.Entry<Uuid, Integer> entry : conversationsOfInterest.entrySet()) {
           Uuid conversationid = entry.getKey();
           Integer newMessages = entry.getValue();
           System.out.format(
-              "Interested conversation's uuid:%s\n\tNumber of new messages:%s\n",
+              "Conversation of interest's uuid:%s\n\tNumber of new messages:%s\n",
               conversationid,
               newMessages);
         }

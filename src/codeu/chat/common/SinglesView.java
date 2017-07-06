@@ -47,7 +47,6 @@ public interface SinglesView {
   // FIND INTERESTS
   //
   // Find the interests for the user with the given id.
-  // TODO: uncomment when implemented in client View
-  //Interests findInterests(Uuid userid);
+  Interests findInterests(Uuid userid);
 
 }
