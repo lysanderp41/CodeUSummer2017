@@ -49,10 +49,10 @@ public final class UserContext {
   }
   
   // returns interests that pertains to the user
-  public InterestsContext getUserInterests() {
+  public Interests getUserInterests() {
     for(Interests interests : view.getInterests()) {
       if(user.id.equals(interests.id)) {
-        return new InterestsContext(interests,view,controller);
+        return interests;
       }
     }return null;
   }
