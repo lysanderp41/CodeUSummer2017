@@ -130,7 +130,7 @@ public final class Model {
     return messageByText;
   }
 
-  public void add(Uuid userid, Uuid interest) {
+  public void add(Uuid userid, Uuid interest, Time creationTime) {
     Interests interests = interestsByUserId().first(userid);
     if (interests != null) {
       interests.interests.add(interest);
@@ -138,7 +138,7 @@ public final class Model {
     }
     HashSet<Uuid> set = new HashSet<Uuid>();
     set.add(interest);
-    interestsByUserId.insert(userid, new Interests(set, userid, Time.now(), Time.now()));
+    interestsByUserId.insert(userid, new Interests(set, userid, creationTime, creationTime));
   }
 
   public StoreAccessor<Uuid, Interests> interestsByUserId() {

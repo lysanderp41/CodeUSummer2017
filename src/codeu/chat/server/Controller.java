@@ -155,7 +155,7 @@ public final class Controller implements RawController, BasicController {
     final User foundUser = model.userById().first(userid);
 
     if (foundUser != null) {
-      model.add(userid, interest);
+      model.add(userid, interest, creationTime);
       LOG.info("Interest with id " + interest + " added to user " + userid);
     }
 
