@@ -40,6 +40,9 @@ public final class Interests {
   public final Uuid id;
   public Time lastStatusUpdate;
   public final Time creation;
+  public Collection<Uuid> getHashSet (){
+    return interests;
+  }
 
   public Interests(Collection<Uuid> interests, Uuid id, Time lastStatusUpdate, Time creation) {
 

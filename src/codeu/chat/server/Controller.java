@@ -55,7 +55,6 @@ public final class Controller implements RawController, BasicController {
     return newConversation(createId(), title, owner, Time.now());
   }
 
-  // TODO: uncomment when method is added to user controller
   @Override
   public Interests newInterest(Uuid userid, Uuid interest) {
     return newInterest(userid, interest, Time.now());
@@ -160,6 +159,20 @@ public final class Controller implements RawController, BasicController {
     }
 
     return model.interestsByUserId().first(userid);
+  }
+
+  public Interests removeInterest(Uuid userid, Uuid interest) {
+    final User foundUser = model.userById().first(userid);
+    Interests interests = null;
+
+    if (foundUser != null) {
+      interests = model.interestsByUserId().first(userid);
+      interests.interests.remove(interest);
+      LOG.info("Interest with id " + interest + " removed from user " + userid);
+
+    }
+
+    return interests;
   }
 
   private Uuid createId() {

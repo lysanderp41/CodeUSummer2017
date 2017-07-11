@@ -329,6 +329,30 @@ public final class Chat {
         }
       }
     });
+    // I-REMOVE (remove interests)
+    //
+    // Add a command that will add a new interest when the user
+    // enters "i-add" while on the user panel.
+    //
+    panel.register("i-remove", new Panel.Command() {
+      @Override
+      public void invoke(List<String> args) {
+        try {
+          final Uuid id = args.size() > 0 ? Uuid.parse(args.get(0)) : Uuid.NULL;
+          if (args.size() > 0) {
+            if (id == null) {
+              System.out.println("ERROR: Failed to remove new interest");
+            } else {
+              user.removeInterest(id);
+            }
+          } else {
+            System.out.println("ERROR: Missing <title>");
+          }
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    });
     // C-JOIN (join conversation)
     //
     // Add a command that will joing a conversation when the user enters

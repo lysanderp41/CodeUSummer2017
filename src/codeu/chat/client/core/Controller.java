@@ -26,6 +26,7 @@ import codeu.chat.common.NetworkCode;
 import codeu.chat.common.User;
 import codeu.chat.util.Logger;
 import codeu.chat.util.Serializers;
+import codeu.chat.util.Time;
 import codeu.chat.util.Uuid;
 import codeu.chat.util.connections.Connection;
 import codeu.chat.util.connections.ConnectionSource;
@@ -126,6 +127,29 @@ final class Controller implements BasicController {
       Uuid.SERIALIZER.write(connection.out(), interests);
 
       if (Serializers.INTEGER.read(connection.in()) == NetworkCode.NEW_INTERESTS_RESPONSE) {
+        response = Serializers.nullable(Interests.SERIALIZER).read(connection.in());
+      } else {
+        LOG.error("Response from server failed.");
+      }
+    } catch (Exception ex) {
+      System.out.println("ERROR: Exception during call on server. Check log for details.");
+      LOG.error(ex, "Exception during call on server.");
+    }
+
+    return response;
+  }
+
+  public Interests removeInterest(Uuid userid, Uuid interests) {
+
+    Interests response = null;
+
+    try (final Connection connection = source.connect()) {
+
+      Serializers.INTEGER.write(connection.out(), NetworkCode.REMOVE_INTERESTS_REQUEST);
+      Uuid.SERIALIZER.write(connection.out(), userid);
+      Uuid.SERIALIZER.write(connection.out(), interests);
+
+      if (Serializers.INTEGER.read(connection.in()) == NetworkCode.REMOVE_INTERESTS_RESPONSE) {
         response = Serializers.nullable(Interests.SERIALIZER).read(connection.in());
       } else {
         LOG.error("Response from server failed.");
