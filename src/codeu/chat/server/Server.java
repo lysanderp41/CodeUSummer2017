@@ -218,6 +218,22 @@ public final class Server {
             }
         });
 
+        // Remove Interest - A client wants to remove a interest
+        this.commands.put(NetworkCode.REMOVE_INTERESTS_REQUEST,  new Command() {
+            @Override
+            public void onMessage(InputStream in, OutputStream out) throws IOException {
+
+                final Uuid userid = (Uuid.SERIALIZER).read(in);
+                final Uuid interest = (Uuid.SERIALIZER).read(in);
+                final Interests interests = controller.removeInterest(userid, interest);
+
+                Serializers.INTEGER.write(out, NetworkCode.REMOVE_INTERESTS_RESPONSE);
+                Serializers.nullable(Interests.SERIALIZER).write(out, interests);
+
+                logQueue.getTransactions().add("REMOVE-INTEREST " + userid.toString() + " " + interest.toString());
+            }
+        });
+
     // Status Update - A client wants to get an update on all the things they're interested in.
     // writes the following items:
     //   1. The updates about the users being followed - A HashMap of key-value pairs where

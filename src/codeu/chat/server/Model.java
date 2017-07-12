@@ -141,6 +141,15 @@ public final class Model {
     interestsByUserId.insert(userid, new Interests(set, userid, creationTime, creationTime));
   }
 
+  public void remove(Uuid userid, Uuid interest) {
+    Interests interests = interestsByUserId().first(userid);
+    if (interests != null) {
+      interests.interests.remove(interest);
+      return;
+    }
+  }
+
+
   public StoreAccessor<Uuid, Interests> interestsByUserId() {
     return interestsByUserId;
   }

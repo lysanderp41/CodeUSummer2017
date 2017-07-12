@@ -27,6 +27,7 @@ import codeu.chat.common.BasicView;
 import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.Interests;
 import codeu.chat.common.User;
+import codeu.chat.util.Time;
 import codeu.chat.util.Uuid;
 
 public final class UserContext {
@@ -61,6 +62,11 @@ public final class UserContext {
     controller.newInterest(user.id,interest);
 
   }
+  public void removeInterest(Uuid interest) {
+    controller.removeInterest(user.id,interest);
+
+  }
+
 
   public Iterable<ConversationContext> conversations() {
 
