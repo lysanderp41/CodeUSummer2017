@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 import codeu.chat.common.BasicView;
 import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.ConversationPayload;
+import codeu.chat.common.Interests;
 import codeu.chat.common.Message;
 import codeu.chat.common.SinglesView;
 import codeu.chat.common.User;
@@ -59,6 +60,10 @@ public final class View implements BasicView, SinglesView {
     return all(model.conversationById());
   }
 
+  public ConversationPayload getConversationPayload(Uuid id) {
+    return model.conversationPayloadById().first(id);
+  }
+
   @Override
   public Collection<ConversationPayload> getConversationPayloads(Collection<Uuid> ids) {
     return intersect(model.conversationPayloadById(), ids);
@@ -69,6 +74,12 @@ public final class View implements BasicView, SinglesView {
     return intersect(model.messageById(), ids);
   }
 
+  // TODO: uncomment when implemented in client View
+  //@Override
+  public Collection<Interests> getInterests() {
+    return all(model.interestsByUserId());
+  }
+
   @Override
   public User findUser(Uuid id) { return model.userById().first(id); }
 
@@ -77,6 +88,10 @@ public final class View implements BasicView, SinglesView {
 
   @Override
   public Message findMessage(Uuid id) { return model.messageById().first(id); }
+
+  // TODO: uncomment when implemented in client View
+  //@Override
+  public Interests findInterests(Uuid userid) { return model.interestsByUserId().first(userid); }
 
   private static <S,T> Collection<T> all(StoreAccessor<S,T> store) {
 
