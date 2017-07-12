@@ -97,23 +97,30 @@ public final class Server {
                 final User user = controller.newUser(name);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         Serializers.INTEGER.write(out, NetworkCode.NEW_USER_RESPONSE);
         Serializers.nullable(User.SERIALIZER).write(out, user);
         logQueue.transactions.add("ADD-USER " + user.id.toString() + " " + "\""+ user.name + "\"" + " "+ user.creation.inMs());
       }
     });
 =======
+=======
+>>>>>>> origin/Persistent-Storage
                 Serializers.INTEGER.write(out, NetworkCode.NEW_USER_RESPONSE);
                 Serializers.nullable(User.SERIALIZER).write(out, user);
                 logQueue.transactions.add("ADD-USER " + user.id.toString() + " " + user.name + " " + user.creation.inMs());
             }
         });
+<<<<<<< HEAD
+>>>>>>> origin/Persistent-Storage
+=======
 >>>>>>> origin/Persistent-Storage
 
         // New Conversation - A client wants to add a new conversation to the back end.
         this.commands.put(NetworkCode.NEW_CONVERSATION_REQUEST, new Command() {
             @Override
             public void onMessage(InputStream in, OutputStream out) throws IOException {
+<<<<<<< HEAD
 
                 final String title = Serializers.STRING.read(in);
                 final Uuid owner = Uuid.SERIALIZER.read(in);
@@ -138,6 +145,32 @@ public final class Server {
         Serializers.INTEGER.write(out, NetworkCode.NEW_INTERESTS_RESPONSE);
         Serializers.nullable(Interests.SERIALIZER).write(out, interests);
 
+=======
+
+                final String title = Serializers.STRING.read(in);
+                final Uuid owner = Uuid.SERIALIZER.read(in);
+                final ConversationHeader conversation = controller.newConversation(title, owner);
+
+                Serializers.INTEGER.write(out, NetworkCode.NEW_CONVERSATION_RESPONSE);
+                Serializers.nullable(ConversationHeader.SERIALIZER).write(out, conversation);
+                logQueue.transactions.add("ADD-CONVERSATION " + conversation.id.toString() + " " + owner.toString() + " " +
+                        title + " " + conversation.creation.inMs());
+            }
+        });
+
+        // New Interest - A client wants to add a new interest to the back end.
+    this.commands.put(NetworkCode.NEW_INTERESTS_REQUEST,  new Command() {
+      @Override
+      public void onMessage(InputStream in, OutputStream out) throws IOException {
+
+        final Uuid userid = (Uuid.SERIALIZER).read(in);
+        final Uuid interest = (Uuid.SERIALIZER).read(in);
+        final Interests interests = controller.newInterest(userid, interest);
+
+        Serializers.INTEGER.write(out, NetworkCode.NEW_INTERESTS_RESPONSE);
+        Serializers.nullable(Interests.SERIALIZER).write(out, interests);
+
+>>>>>>> origin/Persistent-Storage
         logQueue.transactions.add("ADD-INTEREST " + userid.toString() + " " + interest.toString() + " " + interests.creation.inMs());
       }
     });
