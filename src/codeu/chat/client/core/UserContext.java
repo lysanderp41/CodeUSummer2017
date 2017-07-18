@@ -27,6 +27,7 @@ import codeu.chat.common.BasicView;
 import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.Interests;
 import codeu.chat.common.User;
+import codeu.chat.util.Time;
 import codeu.chat.util.Uuid;
 
 public final class UserContext {
@@ -47,11 +48,12 @@ public final class UserContext {
         null :
         new ConversationContext(user, conversation, view, controller);
   }
+  
   // returns interests that pertains to the user
-  public InterestsContext getUserInterests(){
-    for(Interests interests : view.getInterests()){
-      if(user.id.equals(interests.id)){
-        return new InterestsContext(interests,view,controller);
+  public Interests getUserInterests() {
+    for(Interests interests : view.getInterests()) {
+      if(user.id.equals(interests.id)) {
+        return interests;
       }
     }return null;
   }
@@ -60,6 +62,11 @@ public final class UserContext {
     controller.newInterest(user.id,interest);
 
   }
+  public void removeInterest(Uuid interest) {
+    controller.removeInterest(user.id,interest);
+
+  }
+
 
   public Iterable<ConversationContext> conversations() {
 

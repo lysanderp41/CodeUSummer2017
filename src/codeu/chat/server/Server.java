@@ -79,7 +79,7 @@ public final class Server {
 
                 Serializers.INTEGER.write(out, NetworkCode.NEW_MESSAGE_RESPONSE);
                 Serializers.nullable(Message.SERIALIZER).write(out, message);
-                logQueue.transactions.add("ADD-MESSAGE " + message.id.toString() + " " + author.toString() + " " + conversation.toString()
+                logQueue.getTransactions().add("ADD-MESSAGE " + message.id.toString() + " " + author.toString() + " " + conversation.toString()
                         + " " + "\"" + content + "\"" + " " + message.creation.inMs());
                 timeline.scheduleNow(createSendToRelayEvent(
                         author,
@@ -114,8 +114,10 @@ public final class Server {
 
                 Serializers.INTEGER.write(out, NetworkCode.NEW_CONVERSATION_RESPONSE);
                 Serializers.nullable(ConversationHeader.SERIALIZER).write(out, conversation);
+
                 logQueue.transactions.add("ADD-CONVERSATION " + conversation.id.toString() + " " + owner.toString() + " " + "\""+
                         title + "\""+ " " + conversation.creation.inMs());
+
             }
         });
 
@@ -131,7 +133,7 @@ public final class Server {
         Serializers.INTEGER.write(out, NetworkCode.NEW_INTERESTS_RESPONSE);
         Serializers.nullable(Interests.SERIALIZER).write(out, interests);
 
-        logQueue.transactions.add("ADD-INTEREST " + userid.toString() + " " + interest.toString() + " " + interests.creation.inMs());
+        logQueue.getTransactions().add("ADD-INTEREST " + userid.toString() + " " + interest.toString() + " " + interests.creation.inMs());
       }
     });
 
@@ -219,6 +221,22 @@ public final class Server {
             }
         });
 
+        // Remove Interest - A client wants to remove a interest
+        this.commands.put(NetworkCode.REMOVE_INTERESTS_REQUEST,  new Command() {
+            @Override
+            public void onMessage(InputStream in, OutputStream out) throws IOException {
+
+                final Uuid userid = (Uuid.SERIALIZER).read(in);
+                final Uuid interest = (Uuid.SERIALIZER).read(in);
+                final Interests interests = controller.removeInterest(userid, interest);
+
+                Serializers.INTEGER.write(out, NetworkCode.REMOVE_INTERESTS_RESPONSE);
+                Serializers.nullable(Interests.SERIALIZER).write(out, interests);
+
+                logQueue.getTransactions().add("REMOVE-INTEREST " + userid.toString() + " " + interest.toString());
+            }
+        });
+
     // Status Update - A client wants to get an update on all the things they're interested in.
     // writes the following items:
     //   1. The updates about the users being followed - A HashMap of key-value pairs where
@@ -254,7 +272,7 @@ public final class Server {
                 Collection<ConversationHeader> interestedConvo = interestedUsers.get(owner);
                 interestedConvo = interestedConvo == null ? new HashSet<ConversationHeader>() : interestedConvo;
                 interestedConvo.add(convo);
-                interestedUsers.put(owner, interestedConvo);
+                interestedUsers.put(message.author, interestedConvo);
               }
               if (uuids.contains(convo.id)) {
                 Integer interestedMess = interestedConversations.get(convo.id);
@@ -271,7 +289,7 @@ public final class Server {
         Serializers.collection(Serializers.collection(ConversationHeader.SERIALIZER)).write(out, interestedUsers.values());
         Serializers.collection(Uuid.SERIALIZER).write(out, interestedConversations.keySet());
         Serializers.collection(Serializers.INTEGER).write(out, interestedConversations.values());
-        logQueue.transactions.add("STATUS-UPDATE " + userid.toString() + " " + interests.lastStatusUpdate.inMs());
+        logQueue.getTransactions().add("STATUS-UPDATE " + userid.toString() + " " + interests.lastStatusUpdate.inMs());
       }
     });this.timeline.scheduleNow(new Runnable() {
       @Override
