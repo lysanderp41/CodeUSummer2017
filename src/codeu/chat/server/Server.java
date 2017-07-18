@@ -96,11 +96,12 @@ public final class Server {
                 final String name = Serializers.STRING.read(in);
                 final User user = controller.newUser(name);
 
-                Serializers.INTEGER.write(out, NetworkCode.NEW_USER_RESPONSE);
-                Serializers.nullable(User.SERIALIZER).write(out, user);
-                logQueue.getTransactions().add("ADD-USER " + user.id.toString() + " " + user.name + " " + user.creation.inMs());
-            }
-        });
+
+        Serializers.INTEGER.write(out, NetworkCode.NEW_USER_RESPONSE);
+        Serializers.nullable(User.SERIALIZER).write(out, user);
+        logQueue.transactions.add("ADD-USER " + user.id.toString() + " " + "\""+ user.name + "\"" + " "+ user.creation.inMs());
+      }
+    });
 
         // New Conversation - A client wants to add a new conversation to the back end.
         this.commands.put(NetworkCode.NEW_CONVERSATION_REQUEST, new Command() {
@@ -113,8 +114,10 @@ public final class Server {
 
                 Serializers.INTEGER.write(out, NetworkCode.NEW_CONVERSATION_RESPONSE);
                 Serializers.nullable(ConversationHeader.SERIALIZER).write(out, conversation);
-                logQueue.getTransactions().add("ADD-CONVERSATION " + conversation.id.toString() + " " + owner.toString() + " " +
-                        title + " " + conversation.creation.inMs());
+
+                logQueue.transactions.add("ADD-CONVERSATION " + conversation.id.toString() + " " + owner.toString() + " " + "\""+
+                        title + "\""+ " " + conversation.creation.inMs());
+
             }
         });
 
