@@ -19,6 +19,7 @@ import java.util.Collection;
 import codeu.chat.common.BasicController;
 import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.ConversationPayload;
+import codeu.chat.common.Interests;
 import codeu.chat.common.Message;
 import codeu.chat.common.RandomUuidGenerator;
 import codeu.chat.common.RawController;
@@ -52,6 +53,11 @@ public final class Controller implements RawController, BasicController {
   @Override
   public ConversationHeader newConversation(String title, Uuid owner) {
     return newConversation(createId(), title, owner, Time.now());
+  }
+
+  @Override
+  public Interests newInterest(Uuid userid, Uuid interest) {
+    return newInterest(userid, interest, Time.now());
   }
 
   @Override
@@ -141,6 +147,32 @@ public final class Controller implements RawController, BasicController {
     }
 
     return conversation;
+  }
+
+  @Override
+  public Interests newInterest(Uuid userid, Uuid interest, Time creationTime) {
+    final User foundUser = model.userById().first(userid);
+
+    if (foundUser != null) {
+      model.add(userid, interest, creationTime);
+      LOG.info("Interest with id " + interest + " added to user " + userid);
+    }
+
+    return model.interestsByUserId().first(userid);
+  }
+
+  public Interests removeInterest(Uuid userid, Uuid interest) {
+    final User foundUser = model.userById().first(userid);
+    Interests interests = null;
+
+    if (foundUser != null) {
+      interests = model.interestsByUserId().first(userid);
+      interests.interests.remove(interest);
+      LOG.info("Interest with id " + interest + " removed from user " + userid);
+
+    }
+
+    return interests;
   }
 
   private Uuid createId() {

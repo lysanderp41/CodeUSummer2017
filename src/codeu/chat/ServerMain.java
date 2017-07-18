@@ -17,15 +17,16 @@ package codeu.chat;
 
 import java.io.IOException;
 import java.io.File;
+import java.io.PrintWriter;
+import java.util.Scanner;
 
 import codeu.chat.common.Relay;
 import codeu.chat.common.Secret;
 import codeu.chat.server.NoOpRelay;
 import codeu.chat.server.RemoteRelay;
 import codeu.chat.server.Server;
-import codeu.chat.util.Logger;
-import codeu.chat.util.RemoteAddress;
-import codeu.chat.util.Uuid;
+import codeu.chat.server.Controller;
+import codeu.chat.util.*;
 import codeu.chat.util.connections.ClientConnectionSource;
 import codeu.chat.util.connections.Connection;
 import codeu.chat.util.connections.ConnectionSource;
@@ -99,6 +100,7 @@ final class ServerMain {
 
     LOG.info("Created server.");
 
+    server.readTransactionLog();
     while (true) {
 
       try {

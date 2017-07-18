@@ -15,9 +15,11 @@
 package codeu.chat.server;
 
 import java.util.Comparator;
+import java.util.HashSet;
 
 import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.ConversationPayload;
+import codeu.chat.common.Interests;
 import codeu.chat.common.LinearUuidGenerator;
 import codeu.chat.common.Message;
 import codeu.chat.common.User;
@@ -66,6 +68,8 @@ public final class Model {
   private final Store<Uuid, Message> messageById = new Store<>(UUID_COMPARE);
   private final Store<Time, Message> messageByTime = new Store<>(TIME_COMPARE);
   private final Store<String, Message> messageByText = new Store<>(STRING_COMPARE);
+
+  private final Store<Uuid, Interests> interestsByUserId = new Store<>(UUID_COMPARE);
 
   public void add(User user) {
     userById.insert(user.id, user);
@@ -124,5 +128,29 @@ public final class Model {
 
   public StoreAccessor<String, Message> messageByText() {
     return messageByText;
+  }
+
+  public void add(Uuid userid, Uuid interest, Time creationTime) {
+    Interests interests = interestsByUserId().first(userid);
+    if (interests != null) {
+      interests.interests.add(interest);
+      return;
+    }
+    HashSet<Uuid> set = new HashSet<Uuid>();
+    set.add(interest);
+    interestsByUserId.insert(userid, new Interests(set, userid, creationTime, creationTime));
+  }
+
+  public void remove(Uuid userid, Uuid interest) {
+    Interests interests = interestsByUserId().first(userid);
+    if (interests != null) {
+      interests.interests.remove(interest);
+      return;
+    }
+  }
+
+
+  public StoreAccessor<Uuid, Interests> interestsByUserId() {
+    return interestsByUserId;
   }
 }

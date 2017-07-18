@@ -51,4 +51,20 @@ public interface BasicController {
   //  Whether conversations can have the same title is undefined.
   ConversationHeader newConversation(String title, Uuid owner);
 
+  // NEW INTEREST
+  //
+  //   Create a new interest on the server. All parameters must be provided
+  //   or else the server won't apply the change. If the operation is
+  //   successful, an Interests object will be returned representing the full
+  //   state of the interests of the specified user on the server.
+  Interests newInterest(Uuid userid, Uuid interest);
+
+  // REMOVE INTEREST
+  //
+  //   Removes an interest on the server. All parameters must be provided
+  //   or else the server won't apply the change. If the operation is
+  //   successful, an Interests object will be returned representing the full
+  //   state of the interests of the specified user on the server.
+  Interests removeInterest(Uuid userid, Uuid interest);
+
 }
