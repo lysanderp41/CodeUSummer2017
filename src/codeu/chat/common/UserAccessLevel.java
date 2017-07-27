@@ -7,7 +7,7 @@ import codeu.chat.util.Uuid;
  * Created by Lysander on 7/25/17.
  */
 public class UserAccessLevel {
-    private Uuid user;
+    private final Uuid user;
     private AccessLevel accessLevel;
 
     public UserAccessLevel(Uuid user, AccessLevel accessLevel) {
