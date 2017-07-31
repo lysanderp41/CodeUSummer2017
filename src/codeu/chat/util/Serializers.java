@@ -110,19 +110,6 @@ public final class Serializers {
     }
   };
 
-  public static final Serializer<AccessLevel> ACCESS = new Serializer<AccessLevel>() {
-
-    @Override
-    public void write(OutputStream out, AccessLevel access) throws IOException {
-
-    }
-
-    @Override
-    public AccessLevel read(InputStream in) throws IOException {
-      return ;
-    }
-  };
-
   public static final Serializer<String> STRING = new Serializer<String>() {
 
     @Override
