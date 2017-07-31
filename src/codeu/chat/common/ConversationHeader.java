@@ -35,7 +35,7 @@ public final class ConversationHeader {
       Uuid.SERIALIZER.write(out, value.owner);
       Time.SERIALIZER.write(out, value.creation);
       Serializers.STRING.write(out, value.title);
-      AccessLevel.AccessLevel.write(out, value.AccessLevel);
+      Serializers.STRING.write(out, value.defaultAccessLevel.toString());
 
     }
 
@@ -47,7 +47,7 @@ public final class ConversationHeader {
           Uuid.SERIALIZER.read(in),
           Time.SERIALIZER.read(in),
           Serializers.STRING.read(in),
-          AccessLevel.AccessLevel.read(in)
+          AccessLevel.valueOf(Serializers.STRING.read(in))
       );
 
     }
@@ -57,15 +57,15 @@ public final class ConversationHeader {
   public final Uuid owner;
   public final Time creation;
   public final String title;
-  public final AccessLevel access;
+  public AccessLevel defaultAccessLevel;
 
-  public ConversationHeader(Uuid id, Uuid owner, Time creation, String title, AccessLevel defaultAccess) {
+  public ConversationHeader(Uuid id, Uuid owner, Time creation, String title, AccessLevel defaultAccessLevel) {
 
     this.id = id;
     this.owner = owner;
     this.creation = creation;
     this.title = title;
-    this.access = defaultAccess;
+    this.defaultAccessLevel = defaultAccessLevel;
 
   }
 }
