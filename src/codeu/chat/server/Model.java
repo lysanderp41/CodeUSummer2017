@@ -15,6 +15,7 @@
 package codeu.chat.server;
 
 import java.util.Comparator;
+import java.util.Set;
 import java.util.HashSet;
 
 import codeu.chat.common.ConversationHeader;
@@ -23,6 +24,7 @@ import codeu.chat.common.Interests;
 import codeu.chat.common.LinearUuidGenerator;
 import codeu.chat.common.Message;
 import codeu.chat.common.User;
+import codeu.chat.common.UserAccessLevel;
 import codeu.chat.util.Time;
 import codeu.chat.util.Uuid;
 import codeu.chat.util.store.Store;
@@ -70,6 +72,7 @@ public final class Model {
   private final Store<String, Message> messageByText = new Store<>(STRING_COMPARE);
 
   private final Store<Uuid, Interests> interestsByUserId = new Store<>(UUID_COMPARE);
+  private final Store<Uuid, Set<UserAccessLevel>> accessLevelsByConvId = new Store<>(UUID_COMPARE);
 
   public void add(User user) {
     userById.insert(user.id, user);
@@ -149,8 +152,22 @@ public final class Model {
     }
   }
 
-
   public StoreAccessor<Uuid, Interests> interestsByUserId() {
     return interestsByUserId;
+  }
+
+  public void add(Uuid conversationid, UserAccessLevel access) {
+    Set<UserAccessLevel> accesses = accessLevelsByConvId().first(conversationid);
+    if (accesses != null) {
+      accesses.add(access);
+      return;
+    }
+    Set<UserAccessLevel> set = new HashSet<UserAccessLevel>();
+    set.add(access);
+    accessLevelsByConvId.insert(conversationid, set);
+  }
+
+  public StoreAccessor<Uuid, Set<UserAccessLevel>> accessLevelsByConvId() {
+    return accessLevelsByConvId;
   }
 }
