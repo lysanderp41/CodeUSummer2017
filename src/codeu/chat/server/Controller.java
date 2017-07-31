@@ -16,6 +16,7 @@ package codeu.chat.server;
 
 import java.util.Collection;
 
+import codeu.chat.common.AccessLevel;
 import codeu.chat.common.BasicController;
 import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.ConversationPayload;
@@ -51,8 +52,8 @@ public final class Controller implements RawController, BasicController {
   }
 
   @Override
-  public ConversationHeader newConversation(String title, Uuid owner) {
-    return newConversation(createId(), title, owner, Time.now());
+  public ConversationHeader newConversation(String title, Uuid owner, AccessLevel defaultAccess) {
+    return newConversation(createId(), title, owner, Time.now(), defaultAccess);
   }
 
   @Override
