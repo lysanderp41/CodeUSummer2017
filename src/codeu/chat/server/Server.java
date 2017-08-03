@@ -236,6 +236,17 @@ public final class Server {
             logQueue.getTransactions().add("User Access Level" + userId.toString() + " " );
           }
         });
+
+        this.commands.put(NetworkCode.GET_ALL_ACCESS_LEVELS_REQUEST, new Command() {
+            @Override
+            public void onMessage(InputStream in, OutputStream out) throws IOException {
+                final Uuid conversationId = (Uuid.SERIALIZER).read(in);
+                Serializers.INTEGER.write(out, NetworkCode.GET_ALL_ACCESS_LEVELS_RESPONSE);
+                final Collection<UserAccessLevel> accessLevels = view.getAccessLevels(conversationId);
+                Serializers.collection(UserAccessLevel.SERIALIZER).write(out, accessLevels);
+            }
+        });
+
         // Remove Interest - A client wants to remove a interest
         this.commands.put(NetworkCode.REMOVE_INTERESTS_REQUEST,  new Command() {
             @Override
