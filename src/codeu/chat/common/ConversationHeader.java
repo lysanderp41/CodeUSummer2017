@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import codeu.chat.common.AccessLevel;
 import codeu.chat.util.Serializer;
 import codeu.chat.util.Serializers;
 import codeu.chat.util.Time;
@@ -35,7 +34,6 @@ public final class ConversationHeader {
       Uuid.SERIALIZER.write(out, value.owner);
       Time.SERIALIZER.write(out, value.creation);
       Serializers.STRING.write(out, value.title);
-      Serializers.STRING.write(out, value.defaultAccessLevel.toString());
 
     }
 
@@ -46,8 +44,7 @@ public final class ConversationHeader {
           Uuid.SERIALIZER.read(in),
           Uuid.SERIALIZER.read(in),
           Time.SERIALIZER.read(in),
-          Serializers.STRING.read(in),
-          AccessLevel.valueOf(Serializers.STRING.read(in))
+          Serializers.STRING.read(in)
       );
 
     }
@@ -57,15 +54,13 @@ public final class ConversationHeader {
   public final Uuid owner;
   public final Time creation;
   public final String title;
-  public AccessLevel defaultAccessLevel;
 
-  public ConversationHeader(Uuid id, Uuid owner, Time creation, String title, AccessLevel defaultAccessLevel) {
+  public ConversationHeader(Uuid id, Uuid owner, Time creation, String title) {
 
     this.id = id;
     this.owner = owner;
     this.creation = creation;
     this.title = title;
-    this.defaultAccessLevel = defaultAccessLevel;
 
   }
 }
