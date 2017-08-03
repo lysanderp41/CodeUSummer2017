@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import codeu.chat.client.core.View;
+import codeu.chat.common.AccessLevel;
 import codeu.chat.common.BasicController;
 import codeu.chat.common.BasicView;
 import codeu.chat.common.ConversationHeader;
@@ -42,13 +43,13 @@ public final class UserContext {
     this.controller = controller;
   }
 
-  public ConversationContext start(String name) {
-    final ConversationHeader conversation = controller.newConversation(name, user.id);
+  public ConversationContext start(String name, AccessLevel defaultAccessLevel) {
+    final ConversationHeader conversation = controller.newConversation(name, user.id, defaultAccessLevel);
     return conversation == null ?
         null :
         new ConversationContext(user, conversation, view, controller);
   }
-  
+
   // returns interests that pertains to the user
   public Interests getUserInterests() {
     for(Interests interests : view.getInterests()) {

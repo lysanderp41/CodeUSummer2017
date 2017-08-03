@@ -15,6 +15,7 @@
 package codeu.chat.client.commandline;
 
 import codeu.chat.client.core.*;
+import codeu.chat.common.AccessLevel;
 import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.ServerInfo;
 import codeu.chat.util.Time;
@@ -293,8 +294,9 @@ public final class Chat {
       @Override
       public void invoke(List<String> args) {
         final String name = args.size() > 0 ? args.get(0) : "";
+        final AccessLevel defaultAccessLevel = AccessLevel.valueOf(args.get(0));
         if (name.length() > 0) {
-          final ConversationContext conversation = user.start(name);
+          final ConversationContext conversation = user.start(name, defaultAccessLevel);
           if (conversation == null) {
             System.out.println("ERROR: Failed to create new conversation");
           } else {

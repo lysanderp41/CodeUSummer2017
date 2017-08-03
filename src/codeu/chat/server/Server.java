@@ -99,7 +99,7 @@ public final class Server {
 
         Serializers.INTEGER.write(out, NetworkCode.NEW_USER_RESPONSE);
         Serializers.nullable(User.SERIALIZER).write(out, user);
-        logQueue.transactions.add("ADD-USER " + user.id.toString() + " " + "\""+ user.name + "\"" + " "+ user.creation.inMs());
+        logQueue.getTransactions().add("ADD-USER " + user.id.toString() + " " + "\""+ user.name + "\"" + " "+ user.creation.inMs());
       }
     });
 
@@ -110,13 +110,14 @@ public final class Server {
 
                 final String title = Serializers.STRING.read(in);
                 final Uuid owner = Uuid.SERIALIZER.read(in);
-                final ConversationHeader conversation = controller.newConversation(title, owner);
+                final AccessLevel defaultAccessLevel = AccessLevel.valueOf(Serializers.STRING.read(in));
+                final ConversationHeader conversation = controller.newConversation(title, owner, defaultAccessLevel);
 
                 Serializers.INTEGER.write(out, NetworkCode.NEW_CONVERSATION_RESPONSE);
                 Serializers.nullable(ConversationHeader.SERIALIZER).write(out, conversation);
 
-                logQueue.transactions.add("ADD-CONVERSATION " + conversation.id.toString() + " " + owner.toString() + " " + "\""+
-                        title + "\""+ " " + conversation.creation.inMs() + " " + conversation.defaultAccess);
+                logQueue.getTransactions().add("ADD-CONVERSATION " + conversation.id.toString() + " " + owner.toString() + " " + "\""+
+                        title + "\""+ " " + conversation.creation.inMs() + " " + conversation.defaultAccessLevel);
 
             }
         });
@@ -354,6 +355,7 @@ public final class Server {
         final Relay.Bundle.Component relayUser = bundle.user();
         final Relay.Bundle.Component relayConversation = bundle.conversation();
         final Relay.Bundle.Component relayMessage = bundle.user();
+      //  final Relay.Bundle.Component relayAccessLevel = bundle.defaultAccessLevel();
 
         User user = model.userById().first(relayUser.id());
 
@@ -371,7 +373,8 @@ public final class Server {
             conversation = controller.newConversation(relayConversation.id(),
                     relayConversation.text(),
                     user.id,
-                    relayConversation.time());
+                    relayConversation.time(),
+                    relayConversation.defaultAccessLevel());
         }
 
         Message message = model.messageById().first(relayMessage.id());
@@ -422,7 +425,7 @@ public final class Server {
                     String title = tokenizer.next();
                     long timeInMs = Long.parseLong(tokenizer.next());
                     Time timeCreated = Time.fromMs(timeInMs);
-                    AccessLevel defaultAccess = tokenizer.next();
+                    AccessLevel defaultAccess = AccessLevel.valueOf(tokenizer.next());
                     controller.newConversation(uuid, title, ownerUuid, timeCreated, defaultAccess);
                 } else if (action.equals("ADD-USER")) {
                     Uuid uuid = Uuid.parse(tokenizer.next());

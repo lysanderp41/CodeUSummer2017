@@ -65,13 +65,15 @@ public final class Server implements Relay {
     private final Component user;
     private final Component conversation;
     private final Component message;
+    private final Component defaultAccessLevel;
 
     public Bundle(Uuid id,
                   Time time,
                   Uuid team,
                   Component user,
                   Component conversation,
-                  Component message) {
+                  Component message,
+                  Component defaultAccessLevel) {
 
       this.id = id;
       this.time = time;
@@ -79,6 +81,7 @@ public final class Server implements Relay {
       this.user = user;
       this.conversation = conversation;
       this.message = message;
+      this.defaultAccessLevel = defaultAccessLevel;
 
     }
 
@@ -99,6 +102,10 @@ public final class Server implements Relay {
 
     @Override
     public Component message() { return message; }
+
+    @Override
+    public Component defaultAccessLevel() { return defaultAccessLevel; }
+
 
   }
 
@@ -170,7 +177,8 @@ public final class Server implements Relay {
                        Secret teamSecret,
                        Relay.Bundle.Component user,
                        Relay.Bundle.Component conversation,
-                       Relay.Bundle.Component message) {
+                       Relay.Bundle.Component message,
+                       Relay.Bundle.Component defaultAccessLevel ) {
 
     if (authenticate(teamId, teamSecret)) {
 
@@ -191,7 +199,7 @@ public final class Server implements Relay {
           teamId,
           user,
           conversation,
-          message));
+          message, defaultAccessLevel));
     } else {
 
       LOG.warning(

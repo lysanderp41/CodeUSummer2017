@@ -90,6 +90,7 @@ public final class RemoteRelay implements Relay {
       final Relay.Bundle.Component user = COMPONENT_SERIALIZER.read(in);
       final Relay.Bundle.Component conversation = COMPONENT_SERIALIZER.read(in);
       final Relay.Bundle.Component message = COMPONENT_SERIALIZER.read(in);
+      final Relay.Bundle.Component defaultAccessLevel = AccessLevel.valueof(COMPONENT_SERIALIZER.read(in));
 
       return new Relay.Bundle() {
         @Override
@@ -104,6 +105,8 @@ public final class RemoteRelay implements Relay {
         public Relay.Bundle.Component conversation() { return conversation; }
         @Override
         public Relay.Bundle.Component message() { return message; }
+        @Override
+        public Relay.Bundle.Component defaultAccessLevel() {return defaultAccessLevel; }
       };
     }
 
@@ -115,6 +118,7 @@ public final class RemoteRelay implements Relay {
       COMPONENT_SERIALIZER.write(out, value.user());
       COMPONENT_SERIALIZER.write(out, value.conversation());
       COMPONENT_SERIALIZER.write(out, value.message());
+      COMPONENT_SERIALIZER.write(out, value.defaultAccessLevel().toString());
     }
   };
 
@@ -134,7 +138,8 @@ public final class RemoteRelay implements Relay {
                        Secret teamSecret,
                        Relay.Bundle.Component user,
                        Relay.Bundle.Component conversation,
-                       Relay.Bundle.Component message) {
+                       Relay.Bundle.Component message,
+                       Relay.Bundle.Component defaultAccessLevel) {
 
     boolean result = false;
 
@@ -146,6 +151,7 @@ public final class RemoteRelay implements Relay {
       COMPONENT_SERIALIZER.write(connection.out(), user);
       COMPONENT_SERIALIZER.write(connection.out(), conversation);
       COMPONENT_SERIALIZER.write(connection.out(), message);
+      COMPONENT_SERIALIZER.write(connection.out(), defaultAccessLevel);
 
       if (Serializers.INTEGER.read(connection.in()) == NetworkCode.RELAY_WRITE_RESPONSE) {
         result = Serializers.BOOLEAN.read(connection.in());

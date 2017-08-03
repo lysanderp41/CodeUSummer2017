@@ -18,6 +18,7 @@ import java.util.Collection;
 
 import codeu.chat.util.Time;
 import codeu.chat.util.Uuid;
+import codeu.chat.common.AccessLevel;
 
 // RELAY
 //
@@ -102,6 +103,12 @@ public interface Relay {
     // the relay.
     Component message();
 
+    //Default Access Level
+    //
+    //The default access level for the conversation sent from the server to
+    //relay
+    Component defaultAccessLevel();
+
   }
 
   // PACK
@@ -121,7 +128,8 @@ public interface Relay {
                 Secret teamSecret,
                 Bundle.Component user,
                 Bundle.Component conversation,
-                Bundle.Component message);
+                Bundle.Component message,
+                Bundle.Component defaultAccessLevel);
 
   // READ
   //
