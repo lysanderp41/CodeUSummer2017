@@ -24,6 +24,7 @@ import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.ConversationPayload;
 import codeu.chat.common.Message;
 import codeu.chat.common.User;
+import codeu.chat.common.AccessLevel;
 import codeu.chat.util.Uuid;
 
 public final class ConversationContext {
@@ -76,6 +77,11 @@ public final class ConversationContext {
     return updated == null ?
         null :
         getMessage(updated.lastMessage);
+  }
+
+  public void addUserAccessLevel(Uuid userid, AccessLevel accesslevel) {
+    controller.newUserAccessLevel(conversation.id, userid, accesslevel);
+
   }
 
   private ConversationPayload getUpdated() {
