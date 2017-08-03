@@ -110,13 +110,14 @@ public final class Server {
 
                 final String title = Serializers.STRING.read(in);
                 final Uuid owner = Uuid.SERIALIZER.read(in);
-                final ConversationHeader conversation = controller.newConversation(title, owner);
+                final AccessLevel defaultAccessLevel = AccessLevel.valueOf(Serializers.STRING.read(in));
+                final ConversationHeader conversation = controller.newConversation(title, owner, defaultAccessLevel);
 
                 Serializers.INTEGER.write(out, NetworkCode.NEW_CONVERSATION_RESPONSE);
                 Serializers.nullable(ConversationHeader.SERIALIZER).write(out, conversation);
 
                 logQueue.getTransactions().add("ADD-CONVERSATION " + conversation.id.toString() + " " + owner.toString() + " " + "\""+
-                        title + "\""+ " " + conversation.creation.inMs());
+                        title + "\""+ " " + conversation.creation.inMs() + " " + defaultAccessLevel.toString());
 
             }
         });
@@ -446,9 +447,10 @@ public final class Server {
                     Uuid uuid = Uuid.parse(tokenizer.next());
                     Uuid ownerUuid = Uuid.parse(tokenizer.next());
                     String title = tokenizer.next();
+                    AccessLevel defaultAccessLevel = AccessLevel.valueOf(tokenizer.next());
                     long timeInMs = Long.parseLong(tokenizer.next());
                     Time timeCreated = Time.fromMs(timeInMs);
-                    controller.newConversation(uuid, title, ownerUuid, timeCreated);
+                    controller.newConversation(uuid, title, ownerUuid, timeCreated, defaultAccessLevel);
                 } else if (action.equals("ADD-USER")) {
                     Uuid uuid = Uuid.parse(tokenizer.next());
                     String userName = tokenizer.next();

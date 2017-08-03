@@ -215,9 +215,9 @@ public final class Chat {
       }
     });
 
-    // Version Check 
+    // Version Check
     //
-    // adds a new command "version" and will display the version it is in 
+    // adds a new command "version" and will display the version it is in
     //
     panel.register("version", new Panel.Command() {
       @Override
@@ -251,8 +251,9 @@ public final class Chat {
         System.out.println("USER MODE");
         System.out.println("  c-list");
         System.out.println("    List all conversations that the current user can interact with.");
-        System.out.println("  c-add <title>");
+        System.out.println("  c-add <title> <default_Access_Level>");
         System.out.println("    Add a new conversation with the given title and join it as the current user.");
+        System.out.println("    All other users will be assigned the default Access Level")
         System.out.println("  i-add <id>");
         System.out.println("    Add a new interest with the given id ");
         System.out.println("  c-join <title>");
@@ -292,6 +293,8 @@ public final class Chat {
       @Override
       public void invoke(List<String> args) {
         final String name = args.size() > 0 ? args.get(0) : "";
+        //fix
+        final AccessLevel defaultAccessLevel = AccessLevel.valueOf();
         if (name.length() > 0) {
           final ConversationContext conversation = user.start(name);
           if (conversation == null) {
@@ -300,7 +303,7 @@ public final class Chat {
             panels.push(createConversationPanel(conversation));
           }
         } else {
-          System.out.println("ERROR: Missing <title>");
+          System.out.println("ERROR: Missing <title> or <default_Access_Level>");
         }
       }
     });

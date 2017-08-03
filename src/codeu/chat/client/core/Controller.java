@@ -94,7 +94,7 @@ final class Controller implements BasicController {
   }
 
   @Override
-  public ConversationHeader newConversation(String title, Uuid owner)  {
+  public ConversationHeader newConversation(String title, Uuid owner, AccessLevel defaultAccessLevel)  {
 
     ConversationHeader response = null;
 
@@ -103,6 +103,7 @@ final class Controller implements BasicController {
       Serializers.INTEGER.write(connection.out(), NetworkCode.NEW_CONVERSATION_REQUEST);
       Serializers.STRING.write(connection.out(), title);
       Uuid.SERIALIZER.write(connection.out(), owner);
+      Serializers.STRING.write(connection.out(), defaultAccessLevel.toString());
 
       if (Serializers.INTEGER.read(connection.in()) == NetworkCode.NEW_CONVERSATION_RESPONSE) {
         response = Serializers.nullable(ConversationHeader.SERIALIZER).read(connection.in());

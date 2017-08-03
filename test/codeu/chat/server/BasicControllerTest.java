@@ -49,6 +49,7 @@ public final class BasicControllerTest {
   public void testAddConversation() {
 
     final User user = controller.newUser("user");
+    final AccessLevel defaultAccessLevel = controller.newUserAccessLevel("MEMBER");
 
     assertFalse(
         "Check that user has a valid reference",
@@ -56,7 +57,7 @@ public final class BasicControllerTest {
 
     final ConversationHeader conversation = controller.newConversation(
         "conversation",
-        user.id);
+        user.id, defaultAccessLevel);
 
     assertFalse(
         "Check that conversation has a valid reference",
@@ -67,6 +68,7 @@ public final class BasicControllerTest {
   public void testAddMessage() {
 
     final User user = controller.newUser("user");
+    final AccessLevel defaultAccessLevel = controller.newUserAccessLevel(user.id(), "MEMBER");
 
     assertFalse(
         "Check that user has a valid reference",
@@ -74,7 +76,7 @@ public final class BasicControllerTest {
 
     final ConversationHeader conversation = controller.newConversation(
         "conversation",
-        user.id);
+        user.id, defaultAccessLevel);
 
     assertFalse(
         "Check that conversation has a valid reference",

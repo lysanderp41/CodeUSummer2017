@@ -61,6 +61,7 @@ public final class RawControllerTest {
   public void testAddConversation() {
 
     final User user = controller.newUser(userId, "user", Time.now());
+    final AccessLevel defaultAccessLevel = controller.newUserAccessLevel(user.id(), "MEMBER");
 
     assertFalse(
         "Check that user has a valid reference",
