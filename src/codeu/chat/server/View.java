@@ -34,6 +34,7 @@ import codeu.chat.common.Interests;
 import codeu.chat.common.Message;
 import codeu.chat.common.SinglesView;
 import codeu.chat.common.User;
+import codeu.chat.common.UserAccessLevel;
 import codeu.chat.util.Logger;
 import codeu.chat.util.Time;
 import codeu.chat.util.Uuid;

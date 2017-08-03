@@ -21,6 +21,7 @@ import codeu.chat.common.ConversationPayload;
 import codeu.chat.common.Interests;
 import codeu.chat.common.Message;
 import codeu.chat.common.User;
+import codeu.chat.common.UserAccessLevel;
 import codeu.chat.util.Uuid;
 
 // BASIC VIEW

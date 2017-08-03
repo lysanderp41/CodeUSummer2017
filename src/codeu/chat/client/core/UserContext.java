@@ -66,7 +66,14 @@ public final class UserContext {
     controller.removeInterest(user.id,interest);
 
   }
-
+  // returns userAccessLevel that pertains to the user
+  //public UserAccessLevel getUserAccessLevel() {
+    //for(UserAccessLevel userAccessLevel : view.getUserAccessLevel()) {
+      //if(user.id.equals(userAccessLevel.id)) {
+        //return userAccessLevel;
+    //  }
+    //}return null;
+  //}
 
   public Iterable<ConversationContext> conversations() {
 

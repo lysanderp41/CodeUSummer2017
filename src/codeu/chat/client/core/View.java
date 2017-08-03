@@ -29,6 +29,7 @@ import codeu.chat.common.Interests;
 import codeu.chat.common.Message;
 import codeu.chat.common.NetworkCode;
 import codeu.chat.common.User;
+import codeu.chat.common.UserAccessLevel;
 import codeu.chat.util.Logger;
 import codeu.chat.util.Serializers;
 import codeu.chat.util.Time;
@@ -166,7 +167,7 @@ final class View implements BasicView {
   }
 
   @Override
-  public Collection<UserAccessLevel> getUserAccessLevel() {
+  public Collection<UserAccessLevel> getUserAccessLevel(Collection<Uuid> ids) {
 
     final Collection<UserAccessLevel> userAccessLevel = new ArrayList<>();
 
