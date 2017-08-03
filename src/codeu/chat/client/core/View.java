@@ -166,9 +166,9 @@ final class View implements BasicView {
   }
 
   @Override
-  public Collection<Interests> getUserAccessLevel() {
+  public Collection<UserAccessLevel> getUserAccessLevel() {
 
-    final Collection<Interests> userAccessLevel = new ArrayList<>();
+    final Collection<UserAccessLevel> userAccessLevel = new ArrayList<>();
 
     try (final Connection connection = source.connect()) {
 
