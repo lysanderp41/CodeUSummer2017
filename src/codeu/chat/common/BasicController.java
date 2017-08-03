@@ -14,6 +14,7 @@
 
 package codeu.chat.common;
 
+import codeu.chat.common.AccessLevel;
 import codeu.chat.util.Uuid;
 
 // BASIC CONTROLLER
@@ -67,4 +68,11 @@ public interface BasicController {
   //   state of the interests of the specified user on the server.
   Interests removeInterest(Uuid userid, Uuid interest);
 
+  //NEW USER ACCESS LEVEL
+  //
+  //   Create a new user access level on the server. All parameters must be provided
+  //   or else the server won't apply the change. If the operation is
+  //   successful, an Interests object will be returned representing the full
+  //   state of the interests of the specified user on the server.
+  UserAccessLevel newUserAccessLevel(Uuid conversationId, Uuid userId, AccessLevel accessLevel);
 }
