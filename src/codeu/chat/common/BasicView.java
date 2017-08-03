@@ -58,4 +58,10 @@ public interface BasicView {
   //   Return all the interests objects.
   Collection<Interests> getInterests();
 
+  // GET INTERESTS
+  //
+  //   Return all the UserAccessLevel objects whose id is found in the given collection.
+  Collection<UserAccessLevel> getUserAccessLevels(Collection<Uuid> ids);
+
+
 }

@@ -518,7 +518,7 @@ public final class Chat {
         System.out.println("Conversation Info:");
         System.out.format("  Title : %s\n", conversation.conversation.title);
         System.out.format("  Id    : UUID:%s\n", conversation.conversation.id);
-        System.out.format("  Owner : %s\n", conversation.conversation.owner);
+        System.out.format("  Creator : %s\n", conversation.conversation.owner);
       }
     });
 
