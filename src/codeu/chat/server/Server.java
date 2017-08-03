@@ -99,7 +99,7 @@ public final class Server {
 
         Serializers.INTEGER.write(out, NetworkCode.NEW_USER_RESPONSE);
         Serializers.nullable(User.SERIALIZER).write(out, user);
-        logQueue.transactions.add("ADD-USER " + user.id.toString() + " " + "\""+ user.name + "\"" + " "+ user.creation.inMs());
+        logQueue.getTransactions().add("ADD-USER " + user.id.toString() + " " + "\""+ user.name + "\"" + " "+ user.creation.inMs());
       }
     });
 
@@ -115,7 +115,7 @@ public final class Server {
                 Serializers.INTEGER.write(out, NetworkCode.NEW_CONVERSATION_RESPONSE);
                 Serializers.nullable(ConversationHeader.SERIALIZER).write(out, conversation);
 
-                logQueue.transactions.add("ADD-CONVERSATION " + conversation.id.toString() + " " + owner.toString() + " " + "\""+
+                logQueue.getTransactions().add("ADD-CONVERSATION " + conversation.id.toString() + " " + owner.toString() + " " + "\""+
                         title + "\""+ " " + conversation.creation.inMs());
 
             }
