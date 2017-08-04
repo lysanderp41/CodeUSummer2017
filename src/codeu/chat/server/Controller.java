@@ -55,7 +55,11 @@ public final class Controller implements RawController, BasicController {
 
   @Override
   public ConversationHeader newConversation(String title, Uuid owner, AccessLevel defaultAccessLevel) {
-    return newConversation(createId(), title, owner, defaultAccessLevel, Time.now());
+    return newConversation(createId(), title, owner, Time.now(), defaultAccessLevel);
+  }
+
+  public ConversationHeader newConversation(String title, Uuid owner) {
+    return newConversation(createId(), title, owner, Time.now());
   }
 
   @Override
@@ -137,7 +141,7 @@ public final class Controller implements RawController, BasicController {
   }
 
   @Override
-  public ConversationHeader newConversation(Uuid id, String title, Uuid owner, AccessLevel defaultAccessLevel, Time creationTime) {
+  public ConversationHeader newConversation(Uuid id, String title, Uuid owner, Time creationTime, AccessLevel defaultAccessLevel) {
 
     final User foundOwner = model.userById().first(owner);
 
@@ -145,6 +149,21 @@ public final class Controller implements RawController, BasicController {
 
     if (foundOwner != null && isIdFree(id)) {
       conversation = new ConversationHeader(id, owner, creationTime, title, defaultAccessLevel);
+      model.add(conversation);
+      LOG.info("Conversation added: " + id);
+    }
+
+    return conversation;
+  }
+
+  public ConversationHeader newConversation(Uuid id, String title, Uuid owner, Time creationTime) {
+
+    final User foundOwner = model.userById().first(owner);
+
+    ConversationHeader conversation = null;
+
+    if (foundOwner != null && isIdFree(id)) {
+      conversation = new ConversationHeader(id, owner, creationTime, title);
       model.add(conversation);
       LOG.info("Conversation added: " + id);
     }

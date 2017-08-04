@@ -18,6 +18,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
 
+import codeu.chat.common.AccessLevel;
 import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.Message;
 import codeu.chat.common.RawController;
@@ -61,7 +62,7 @@ public final class RawControllerTest {
   public void testAddConversation() {
 
     final User user = controller.newUser(userId, "user", Time.now());
-    final AccessLevel defaultAccessLevel = controller.newUserAccessLevel(user.id(), "MEMBER");
+    final AccessLevel defaultAccessLevel = AccessLevel.NONE;
 
     assertFalse(
         "Check that user has a valid reference",
@@ -74,7 +75,7 @@ public final class RawControllerTest {
         conversationId,
         "conversation",
         user.id,
-        Time.now());
+        Time.now(), defaultAccessLevel);
 
     assertFalse(
         "Check that conversation has a valid reference",
@@ -88,7 +89,7 @@ public final class RawControllerTest {
   public void testAddMessage() {
 
     final User user = controller.newUser(userId, "user", Time.now());
-
+    final AccessLevel defaultAccessLevel = AccessLevel.NONE;
     assertFalse(
         "Check that user has a valid reference",
         user == null);
@@ -100,7 +101,7 @@ public final class RawControllerTest {
         conversationId,
         "conversation",
         user.id,
-        Time.now());
+        Time.now(), defaultAccessLevel);
 
     assertFalse(
         "Check that conversation has a valid reference",

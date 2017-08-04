@@ -18,10 +18,12 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
 
+import codeu.chat.common.AccessLevel;
 import codeu.chat.common.BasicController;
 import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.Message;
 import codeu.chat.common.User;
+import codeu.chat.common.UserAccessLevel;
 import codeu.chat.util.Uuid;
 
 public final class BasicControllerTest {
@@ -49,7 +51,7 @@ public final class BasicControllerTest {
   public void testAddConversation() {
 
     final User user = controller.newUser("user");
-    final AccessLevel defaultAccessLevel = controller.newUserAccessLevel("MEMBER");
+    final AccessLevel defaultAccessLevel = AccessLevel.NONE;
 
     assertFalse(
         "Check that user has a valid reference",
@@ -68,7 +70,7 @@ public final class BasicControllerTest {
   public void testAddMessage() {
 
     final User user = controller.newUser("user");
-    final AccessLevel defaultAccessLevel = controller.newUserAccessLevel(user.id(), "MEMBER");
+    final AccessLevel defaultAccessLevel = AccessLevel.NONE;
 
     assertFalse(
         "Check that user has a valid reference",
