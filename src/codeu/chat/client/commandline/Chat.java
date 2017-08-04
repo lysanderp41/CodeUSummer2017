@@ -15,9 +15,10 @@
 package codeu.chat.client.commandline;
 
 import codeu.chat.client.core.*;
+import codeu.chat.common.AccessLevel;
 import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.ServerInfo;
-import codeu.chat.common.AccessLevel;
+import codeu.chat.common.UserAccessLevel;
 import codeu.chat.util.Time;
 import codeu.chat.util.Tokenizer;
 import codeu.chat.util.Uuid;
@@ -458,6 +459,8 @@ public final class Chat {
         System.out.println("    List all messages in the current conversation.");
         System.out.println("  m-add <message>");
         System.out.println("    Add a new message to the current conversation as the current user.");
+        System.out.println("  set-default <access level>");
+        System.out.println("    Set a new default access level for new users (creator only)");
         System.out.println("  n-make <userid>");
         System.out.println("    Make the user have no access level in the conversation.");
         System.out.println("  mem-make <userid>");
@@ -513,6 +516,19 @@ public final class Chat {
       }
     });
 
+    panel.register("set-default", new Panel.Command() {
+      @Override
+      public void invoke(List<String> args) {
+        final String accessLevel = args.size() > 0 ? args.get(0) : "";
+        if (accessLevel.length() > 0 && conversation.user.id.equals(conversation.conversation.owner)) {
+          AccessLevel defaultAccessLevel = AccessLevel.valueOf(accessLevel);
+          conversation.setDefaultAccessLevel(defaultAccessLevel);
+        } else {
+          System.out.println("ERROR: Must set a valid access level, or you do not have the necessary permissions");
+        }
+      }
+    });
+
     // N-MAKE (make user none)
     //
     // Add a command to make a user have the access level of none
@@ -522,14 +538,15 @@ public final class Chat {
       public void invoke(List<String> args) {
         try {
           final Uuid id = args.size() > 0 ? Uuid.parse(args.get(0)) : Uuid.NULL;
-          if (args.size() > 0) {
+          final AccessLevel accesslevel = conversation.getUserAccessLevel().getAccessLevel();
+          if (args.size() > 0 && (accesslevel == AccessLevel.OWNER || accesslevel == AccessLevel.CREATOR)) {
             if (id == null) {
               System.out.println("ERROR: Failed to make user have no access level");
             } else {
               conversation.addUserAccessLevel(id, AccessLevel.NONE);
             }
           } else {
-            System.out.println("ERROR: Missing <userid>");
+            System.out.println("ERROR: Missing <userid> or you don't have the access level required");
           }
         } catch (Exception e) {
           e.printStackTrace();
@@ -546,7 +563,8 @@ public final class Chat {
       public void invoke(List<String> args) {
         try {
           final Uuid id = args.size() > 0 ? Uuid.parse(args.get(0)) : Uuid.NULL;
-          if (args.size() > 0) {
+          final AccessLevel accesslevel = conversation.getUserAccessLevel().getAccessLevel();
+          if (args.size() > 0 && (accesslevel == AccessLevel.OWNER || accesslevel == AccessLevel.CREATOR)) {
             if (id == null) {
               System.out.println("ERROR: Failed to make user a member");
             } else {
@@ -570,7 +588,8 @@ public final class Chat {
       public void invoke(List<String> args) {
         try {
           final Uuid id = args.size() > 0 ? Uuid.parse(args.get(0)) : Uuid.NULL;
-          if (args.size() > 0) {
+          final AccessLevel accesslevel = conversation.getUserAccessLevel().getAccessLevel();
+          if (args.size() > 0 && (accesslevel == AccessLevel.OWNER || accesslevel == AccessLevel.CREATOR)) {
             if (id == null) {
               System.out.println("ERROR: Failed to make user an owner");
             } else {

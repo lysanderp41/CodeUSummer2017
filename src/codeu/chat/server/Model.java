@@ -18,13 +18,7 @@ import java.util.Comparator;
 import java.util.Set;
 import java.util.HashSet;
 
-import codeu.chat.common.ConversationHeader;
-import codeu.chat.common.ConversationPayload;
-import codeu.chat.common.Interests;
-import codeu.chat.common.LinearUuidGenerator;
-import codeu.chat.common.Message;
-import codeu.chat.common.User;
-import codeu.chat.common.UserAccessLevel;
+import codeu.chat.common.*;
 import codeu.chat.util.Time;
 import codeu.chat.util.Uuid;
 import codeu.chat.util.store.Store;
@@ -73,6 +67,7 @@ public final class Model {
 
   private final Store<Uuid, Interests> interestsByUserId = new Store<>(UUID_COMPARE);
   private final Store<Uuid, Set<UserAccessLevel>> accessLevelsByConvId = new Store<>(UUID_COMPARE);
+  private final Store<Uuid, UserAccessLevel> defaultAccessLevelsByConvId = new Store<>(UUID_COMPARE);
 
   public void add(User user) {
     userById.insert(user.id, user);
@@ -90,6 +85,13 @@ public final class Model {
 
   public StoreAccessor<String, User> userByText() {
     return userByText;
+  }
+
+  public void add(ConversationHeader conversation, AccessLevel defaultAccessLevel) {
+    conversationById.insert(conversation.id, conversation);
+    conversationByTime.insert(conversation.creation, conversation);
+    conversationByText.insert(conversation.title, conversation);
+    conversationPayloadById.insert(conversation.id, new ConversationPayload(conversation.id));
   }
 
   public void add(ConversationHeader conversation) {
@@ -159,9 +161,16 @@ public final class Model {
   public void add(Uuid conversationid, UserAccessLevel access) {
     Set<UserAccessLevel> accesses = accessLevelsByConvId().first(conversationid);
     if (accesses != null) {
+      for (UserAccessLevel useraccess : accesses) {
+         if (useraccess.getUser().equals(access.getUser())) {
+            useraccess.setAccessLevel(access.getAccessLevel());
+            return;
+         }
+      }
       accesses.add(access);
       return;
     }
+
     Set<UserAccessLevel> set = new HashSet<UserAccessLevel>();
     set.add(access);
     accessLevelsByConvId.insert(conversationid, set);
@@ -169,5 +178,20 @@ public final class Model {
 
   public StoreAccessor<Uuid, Set<UserAccessLevel>> accessLevelsByConvId() {
     return accessLevelsByConvId;
+  }
+
+  public StoreAccessor<Uuid, UserAccessLevel> defaultAccessLevelsByConvId() {
+    return defaultAccessLevelsByConvId;
+  }
+
+  public AccessLevel setDefaultAccessLevel(Uuid conversationId, AccessLevel defaultAccessLevel) {
+    if (defaultAccessLevelsByConvId.first(conversationId) != null) {
+      defaultAccessLevelsByConvId.first(conversationId).setAccessLevel(defaultAccessLevel);
+      return defaultAccessLevel;
+    } else {
+      final UserAccessLevel defaultAccess = new UserAccessLevel(conversationId, defaultAccessLevel);
+      defaultAccessLevelsByConvId.insert(conversationId, defaultAccess);
+      return defaultAccessLevel;
+    }
   }
 }
