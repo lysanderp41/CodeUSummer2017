@@ -23,6 +23,7 @@ import codeu.chat.common.Message;
 import codeu.chat.common.User;
 import codeu.chat.common.UserAccessLevel;
 import codeu.chat.util.Uuid;
+import codeu.chat.common.UserAccessLevel;
 
 // BASIC VIEW
 //
@@ -59,10 +60,9 @@ public interface BasicView {
   //   Return all the interests objects.
   Collection<Interests> getInterests();
 
-  // GET INTERESTS
+  // GET USER ACCESS LEVELS
   //
-  //   Return all the UserAccessLevel objects whose id is found in the given collection.
-  Collection<UserAccessLevel> getUserAccessLevels(Collection<Uuid> ids);
-
+  //   Returns all the interests
+  Collection<UserAccessLevel> getAccessLevels(Uuid conversation);
 
 }

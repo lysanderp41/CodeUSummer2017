@@ -99,7 +99,7 @@ public final class Server {
 
         Serializers.INTEGER.write(out, NetworkCode.NEW_USER_RESPONSE);
         Serializers.nullable(User.SERIALIZER).write(out, user);
-        logQueue.transactions.add("ADD-USER " + user.id.toString() + " " + "\""+ user.name + "\"" + " "+ user.creation.inMs());
+        logQueue.getTransactions().add("ADD-USER " + user.id.toString() + " " + "\""+ user.name + "\"" + " "+ user.creation.inMs());
       }
     });
 
@@ -115,8 +115,8 @@ public final class Server {
                 Serializers.INTEGER.write(out, NetworkCode.NEW_CONVERSATION_RESPONSE);
                 Serializers.nullable(ConversationHeader.SERIALIZER).write(out, conversation);
 
-                logQueue.transactions.add("ADD-CONVERSATION " + conversation.id.toString() + " " + owner.toString() + " " + "\""+
-                        title + "\""+ " " + conversation.creation.inMs() + " " + conversation.defaultAccess);
+                logQueue.getTransactions().add("ADD-CONVERSATION " + conversation.id.toString() + " " + owner.toString() + " " + "\""+
+                        title + "\""+ " " + conversation.creation.inMs());
 
             }
         });
@@ -218,6 +218,32 @@ public final class Server {
             public void onMessage(InputStream in, OutputStream out) throws IOException {
                 Serializers.INTEGER.write(out, NetworkCode.SERVER_UPTIME_RESPONSE);
                 Time.SERIALIZER.write(out, info.startTime);
+            }
+        });
+
+        //User Access Level- A client wants to get the user's access level for a conversation
+        this.commands.put(NetworkCode.NEW_ACCESS_LEVEL_REQUEST, new Command() {
+          @Override
+          public void onMessage(InputStream in, OutputStream out) throws IOException {
+            final Uuid conversationId = (Uuid.SERIALIZER).read(in);
+            final Uuid userId = (Uuid.SERIALIZER).read(in);
+            final AccessLevel accessLevel = AccessLevel.valueOf(Serializers.STRING.read(in));
+            Serializers.INTEGER.write(out, NetworkCode.NEW_ACCESS_LEVEL_RESPONSE);
+            final UserAccessLevel userAccess = controller.newUserAccessLevel(conversationId, userId, accessLevel);
+            Serializers.nullable(UserAccessLevel.SERIALIZER).write(out, userAccess);
+
+//fix
+            logQueue.getTransactions().add("User Access Level" + userId.toString() + " " );
+          }
+        });
+
+        this.commands.put(NetworkCode.GET_ALL_ACCESS_LEVELS_REQUEST, new Command() {
+            @Override
+            public void onMessage(InputStream in, OutputStream out) throws IOException {
+                final Uuid conversationId = (Uuid.SERIALIZER).read(in);
+                Serializers.INTEGER.write(out, NetworkCode.GET_ALL_ACCESS_LEVELS_RESPONSE);
+                final Collection<UserAccessLevel> accessLevels = view.getAccessLevels(conversationId);
+                Serializers.collection(UserAccessLevel.SERIALIZER).write(out, accessLevels);
             }
         });
 
@@ -422,8 +448,7 @@ public final class Server {
                     String title = tokenizer.next();
                     long timeInMs = Long.parseLong(tokenizer.next());
                     Time timeCreated = Time.fromMs(timeInMs);
-                    AccessLevel defaultAccess = tokenizer.next();
-                    controller.newConversation(uuid, title, ownerUuid, timeCreated, defaultAccess);
+                    controller.newConversation(uuid, title, ownerUuid, timeCreated);
                 } else if (action.equals("ADD-USER")) {
                     Uuid uuid = Uuid.parse(tokenizer.next());
                     String userName = tokenizer.next();
