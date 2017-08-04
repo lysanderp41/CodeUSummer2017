@@ -34,6 +34,9 @@ import codeu.chat.common.Interests;
 import codeu.chat.common.Message;
 import codeu.chat.common.SinglesView;
 import codeu.chat.common.User;
+import codeu.chat.common.UserAccessLevel;
+import codeu.chat.common.*;
+
 import codeu.chat.util.Logger;
 import codeu.chat.util.Time;
 import codeu.chat.util.Uuid;
@@ -80,6 +83,13 @@ public final class View implements BasicView, SinglesView {
   }
 
   @Override
+  public Collection<UserAccessLevel> getAccessLevels(Uuid conversation) {
+    Collection<UserAccessLevel> accessLevels = new ArrayList<>();
+    accessLevels.addAll(model.accessLevelsByConvId().first(conversation));
+    return accessLevels;
+  }
+
+  @Override
   public User findUser(Uuid id) { return model.userById().first(id); }
 
   @Override
@@ -90,6 +100,20 @@ public final class View implements BasicView, SinglesView {
 
   @Override
   public Interests findInterests(Uuid userid) { return model.interestsByUserId().first(userid); }
+
+  @Override
+  public UserAccessLevel findUserAccessLevel(Uuid conversation, Uuid user) {
+    Collection<UserAccessLevel> accessLevels = model.accessLevelsByConvId().first(conversation);
+    Iterator<UserAccessLevel> iterator = accessLevels.iterator();
+    UserAccessLevel current;
+
+    while(iterator.hasNext()) {
+      current = iterator.next();
+      if (current.getUser().equals(user))
+        return current;
+    }
+    return null;
+  }
 
   private static <S,T> Collection<T> all(StoreAccessor<S,T> store) {
 

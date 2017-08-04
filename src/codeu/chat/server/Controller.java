@@ -16,6 +16,7 @@ package codeu.chat.server;
 
 import java.util.Collection;
 
+import codeu.chat.common.AccessLevel;
 import codeu.chat.common.BasicController;
 import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.ConversationPayload;
@@ -24,6 +25,7 @@ import codeu.chat.common.Message;
 import codeu.chat.common.RandomUuidGenerator;
 import codeu.chat.common.RawController;
 import codeu.chat.common.User;
+import codeu.chat.common.UserAccessLevel;
 import codeu.chat.util.Logger;
 import codeu.chat.util.Time;
 import codeu.chat.util.Uuid;
@@ -147,6 +149,20 @@ public final class Controller implements RawController, BasicController {
     }
 
     return conversation;
+  }
+
+  @Override
+  public UserAccessLevel newUserAccessLevel(Uuid conversationId, Uuid userId, AccessLevel accessLevel) {
+
+    final User foundUser = model.userById().first(userId);
+    UserAccessLevel userAccess = null;
+    if(foundUser != null) {
+      model.add(conversationId, userAccess);
+      userAccess = new UserAccessLevel (userId, accessLevel);
+      LOG.info("AccessLevel " + accessLevel + " added to user " + userId);
+    }
+
+    return userAccess;
   }
 
   @Override

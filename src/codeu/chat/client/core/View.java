@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+
 import codeu.chat.common.ServerInfo;
 import codeu.chat.common.BasicView;
 import codeu.chat.common.ConversationHeader;
@@ -29,6 +30,8 @@ import codeu.chat.common.Interests;
 import codeu.chat.common.Message;
 import codeu.chat.common.NetworkCode;
 import codeu.chat.common.User;
+import codeu.chat.common.UserAccessLevel;
+import codeu.chat.common.*;
 import codeu.chat.util.Logger;
 import codeu.chat.util.Serializers;
 import codeu.chat.util.Time;
@@ -143,6 +146,29 @@ final class View implements BasicView {
   }
 
   @Override
+  public Collection<UserAccessLevel> getAccessLevels(Uuid conversation) {
+
+    final Collection<UserAccessLevel> accessLevels = new ArrayList<>();
+
+    try (final Connection connection = source.connect()) {
+
+      Serializers.INTEGER.write(connection.out(), NetworkCode.GET_ALL_ACCESS_LEVELS_REQUEST);
+      Uuid.SERIALIZER.write(connection.out(), conversation);
+
+      if (Serializers.INTEGER.read(connection.in()) == NetworkCode.GET_ALL_ACCESS_LEVELS_RESPONSE) {
+        accessLevels.addAll(Serializers.collection(UserAccessLevel.SERIALIZER).read(connection.in()));
+      } else {
+        LOG.error("Response from server failed.");
+      }
+    } catch (Exception ex) {
+      System.out.println("ERROR: Exception during call on server. Check log for details.");
+      LOG.error(ex, "Exception during call on server.");
+    }
+
+    return accessLevels;
+  }
+
+  @Override
   public Collection<Message> getMessages(Collection<Uuid> ids) {
 
     final Collection<Message> messages = new ArrayList<>();
@@ -163,6 +189,29 @@ final class View implements BasicView {
     }
 
     return messages;
+  }
+
+  @Override
+  public Collection<UserAccessLevel> getUserAccessLevel(Collection<Uuid> ids) {
+
+    final Collection<UserAccessLevel> userAccessLevel = new ArrayList<>();
+
+    try (final Connection connection = source.connect()) {
+
+      Serializers.INTEGER.write(connection.out(), NetworkCode.GET_USERACCESSLEVEL_REQUEST);
+      Serializers.collection(Uuid.SERIALIZER).write(connection.out(), ids);
+
+      if (Serializers.INTEGER.read(connection.in()) == NetworkCode.GET_USERACCESSLEVEL_RESPONSE) {
+        userAccessLevel.addAll(Serializers.collection(UserAccessLevel.SERIALIZER).read(connection.in()));
+      } else {
+        LOG.error("Response from server failed.");
+      }
+    } catch (Exception ex) {
+      System.out.println("ERROR: Exception during call on server. Check log for details.");
+      LOG.error(ex, "Exception during call on server.");
+    }
+
+    return userAccessLevel;
   }
 
   public void getStatusUpdate(Uuid userid, HashMap<Uuid, Collection<ConversationHeader>> interestedUsers,
