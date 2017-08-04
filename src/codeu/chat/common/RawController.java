@@ -14,6 +14,7 @@
 
 package codeu.chat.common;
 
+import codeu.chat.common.AccessLevel;
 import codeu.chat.util.Time;
 import codeu.chat.util.Uuid;
 
@@ -46,5 +47,10 @@ public interface RawController {
   //
   // Add a new interest to the model with a specific id.
   Interests newInterest(Uuid userid, Uuid interest, Time creationTime);
+
+  //New USER ACCESS LEVEL
+  //
+  //Add a new accessLevel with a specific id.
+  UserAccessLevel newUserAccessLevel(Uuid conversationId, Uuid userId, AccessLevel accessLevel);
 
 }

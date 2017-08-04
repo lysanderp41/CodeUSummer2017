@@ -159,9 +159,16 @@ public final class Model {
   public void add(Uuid conversationid, UserAccessLevel access) {
     Set<UserAccessLevel> accesses = accessLevelsByConvId().first(conversationid);
     if (accesses != null) {
+      for (UserAccessLevel useraccess : accesses) {
+         if (useraccess.getUser().equals(access.getUser())) {
+            useraccess.setAccessLevel(access.getAccessLevel());
+            return;
+         }
+      }
       accesses.add(access);
       return;
     }
+
     Set<UserAccessLevel> set = new HashSet<UserAccessLevel>();
     set.add(access);
     accessLevelsByConvId.insert(conversationid, set);

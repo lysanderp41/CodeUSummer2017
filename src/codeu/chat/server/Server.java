@@ -221,6 +221,43 @@ public final class Server {
             }
         });
 
+        //User Access Level- A client wants to get the user's access level for a conversation
+        this.commands.put(NetworkCode.NEW_ACCESS_LEVEL_REQUEST, new Command() {
+          @Override
+          public void onMessage(InputStream in, OutputStream out) throws IOException {
+            final Uuid conversationId = (Uuid.SERIALIZER).read(in);
+            final Uuid userId = (Uuid.SERIALIZER).read(in);
+            final AccessLevel accessLevel = AccessLevel.valueOf(Serializers.STRING.read(in));
+            Serializers.INTEGER.write(out, NetworkCode.NEW_ACCESS_LEVEL_RESPONSE);
+            final UserAccessLevel userAccess = controller.newUserAccessLevel(conversationId, userId, accessLevel);
+            Serializers.nullable(UserAccessLevel.SERIALIZER).write(out, userAccess);
+
+//fix
+            logQueue.getTransactions().add("User Access Level" + userId.toString() + " " );
+          }
+        });
+
+        this.commands.put(NetworkCode.GET_ALL_ACCESS_LEVELS_REQUEST, new Command() {
+            @Override
+            public void onMessage(InputStream in, OutputStream out) throws IOException {
+                final Uuid conversationId = (Uuid.SERIALIZER).read(in);
+                Serializers.INTEGER.write(out, NetworkCode.GET_ALL_ACCESS_LEVELS_RESPONSE);
+                final Collection<UserAccessLevel> accessLevels = view.getAccessLevels(conversationId);
+                Serializers.collection(UserAccessLevel.SERIALIZER).write(out, accessLevels);
+            }
+        });
+
+        this.commands.put(NetworkCode.GET_ACCESS_LEVEL_REQUEST, new Command() {
+            @Override
+            public void onMessage(InputStream in, OutputStream out) throws IOException {
+                final Uuid conversationId = (Uuid.SERIALIZER).read(in);
+                final Uuid userId = (Uuid.SERIALIZER).read(in);
+                Serializers.INTEGER.write(out, NetworkCode.GET_ACCESS_LEVEL_RESPONSE);
+                final UserAccessLevel accessLevel = view.findUserAccessLevel(conversationId, userId);
+                Serializers.nullable(UserAccessLevel.SERIALIZER).write(out, accessLevel);
+            }
+        });
+
         // Remove Interest - A client wants to remove a interest
         this.commands.put(NetworkCode.REMOVE_INTERESTS_REQUEST,  new Command() {
             @Override

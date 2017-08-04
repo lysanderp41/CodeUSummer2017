@@ -18,16 +18,15 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.Thread;
 
+import codeu.chat.common.AccessLevel;
 import codeu.chat.common.BasicController;
 import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.Interests;
 import codeu.chat.common.Message;
 import codeu.chat.common.NetworkCode;
 import codeu.chat.common.User;
-import codeu.chat.util.Logger;
-import codeu.chat.util.Serializers;
-import codeu.chat.util.Time;
-import codeu.chat.util.Uuid;
+import codeu.chat.common.UserAccessLevel;
+import codeu.chat.util.*;
 import codeu.chat.util.connections.Connection;
 import codeu.chat.util.connections.ConnectionSource;
 
@@ -113,6 +112,51 @@ final class Controller implements BasicController {
     }
 
     return response;
+  }
+
+  @Override
+  public UserAccessLevel newUserAccessLevel(Uuid conversationId, Uuid userId, AccessLevel accessLevel) {
+
+      UserAccessLevel response = null;
+
+      try (final Connection connection = source.connect()) {
+        Serializers.INTEGER.write(connection.out(), NetworkCode.NEW_ACCESS_LEVEL_REQUEST);
+        Uuid.SERIALIZER.write(connection.out(), conversationId);
+        Uuid.SERIALIZER.write(connection.out(), userId);
+        Serializers.STRING.write(connection.out(), accessLevel.toString());
+
+        if (Serializers.INTEGER.read(connection.in()) == NetworkCode.NEW_ACCESS_LEVEL_RESPONSE) {
+          response = Serializers.nullable(UserAccessLevel.SERIALIZER).read(connection.in());
+        } else {
+          LOG.error("Response from server failed.");
+        }
+      } catch (Exception ex) {
+        System.out.println("ERROR: Exception during call on server. Check log for details.");
+        LOG.error(ex, "Exception during call on server.");
+      }
+      return response;
+  }
+
+  @Override
+  public UserAccessLevel getUserAccessLevel(Uuid conversationId, Uuid userId) {
+
+      UserAccessLevel response = null;
+
+      try (final Connection connection = source.connect()) {
+        Serializers.INTEGER.write(connection.out(), NetworkCode.GET_ACCESS_LEVEL_REQUEST);
+        Uuid.SERIALIZER.write(connection.out(), conversationId);
+        Uuid.SERIALIZER.write(connection.out(), userId);
+
+        if (Serializers.INTEGER.read(connection.in()) == NetworkCode.GET_ACCESS_LEVEL_RESPONSE) {
+          response = Serializers.nullable(UserAccessLevel.SERIALIZER).read(connection.in());
+        } else {
+          LOG.error("Response from server failed.");
+        }
+      } catch (Exception ex) {
+        System.out.println("ERROR: Exception during call on server. Check log for details.");
+        LOG.error(ex, "Exception during call on server.");
+      }
+      return response;
   }
 
   @Override
