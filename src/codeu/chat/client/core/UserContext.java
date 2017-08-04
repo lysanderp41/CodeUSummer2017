@@ -44,7 +44,7 @@ public final class UserContext {
     this.controller = controller;
   }
 
-  public ConversationContext start(String name) {
+  public ConversationContext start(String name, AccessLevel defaultAccessLevel) {
     final ConversationHeader conversation = controller.newConversation(name, user.id, defaultAccessLevel);
     return conversation == null ?
         null :

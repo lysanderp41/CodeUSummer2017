@@ -255,7 +255,7 @@ public final class Chat {
         System.out.println("    List all conversations that the current user can interact with.");
         System.out.println("  c-add <title> <default_Access_Level>");
         System.out.println("    Add a new conversation with the given title and join it as the current user.");
-        System.out.println("    All other users will be assigned the default Access Level")
+        System.out.println("    All other users will be assigned the default Access Level");
         System.out.println("  i-add <id>");
         System.out.println("    Add a new interest with the given id ");
         System.out.println("  c-join <title>");
@@ -295,10 +295,11 @@ public final class Chat {
       @Override
       public void invoke(List<String> args) {
         final String name = args.size() > 0 ? args.get(0) : "";
-        //fix
-        final AccessLevel defaultAccessLevel = AccessLevel.valueOf();
-        if (name.length() > 0) {
-          final ConversationContext conversation = user.start(name);
+
+        final String defaultUserAccessLevel = args.size() > 1 ? args.get(1) : "";
+        if (name.length() > 0 && defaultUserAccessLevel.length() > 0) {
+          final AccessLevel defaultAccessLevel = AccessLevel.valueOf(defaultUserAccessLevel);
+          final ConversationContext conversation = user.start(name, defaultAccessLevel);
           if (conversation == null) {
             System.out.println("ERROR: Failed to create new conversation");
           } else {

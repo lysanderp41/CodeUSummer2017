@@ -36,7 +36,7 @@ public final class ConversationHeader {
       Uuid.SERIALIZER.write(out, value.owner);
       Time.SERIALIZER.write(out, value.creation);
       Serializers.STRING.write(out, value.title);
-      Serializers.String.write(out, value.defaultAccessLevel.toString()));
+      Serializers.String.write(out, value.defaultAccessLevel.toString());
 
     }
 
@@ -49,7 +49,7 @@ public final class ConversationHeader {
           Time.SERIALIZER.read(in),
           Serializers.STRING.read(in),
           AccessLevel.valueOf(Serializers.STRING.read(in))
-          
+
       );
 
     }
