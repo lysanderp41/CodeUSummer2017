@@ -75,4 +75,6 @@ public interface BasicController {
   //   successful, an Interests object will be returned representing the full
   //   state of the interests of the specified user on the server.
   UserAccessLevel newUserAccessLevel(Uuid conversationId, Uuid userId, AccessLevel accessLevel);
+
+  UserAccessLevel getUserAccessLevel(Uuid conversationId, Uuid userId);
 }
