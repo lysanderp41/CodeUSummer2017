@@ -160,7 +160,7 @@ public final class Model {
     Set<UserAccessLevel> accesses = accessLevelsByConvId().first(conversationid);
     if (accesses != null) {
       for (UserAccessLevel useraccess : accesses) {
-         if (useraccess.getUser() == access.getUser()) {
+         if (useraccess.getUser().equals(access.getUser())) {
             useraccess.setAccessLevel(access.getAccessLevel());
             return;
          }
