@@ -247,6 +247,17 @@ public final class Server {
             }
         });
 
+        this.commands.put(NetworkCode.GET_ACCESS_LEVEL_REQUEST, new Command() {
+            @Override
+            public void onMessage(InputStream in, OutputStream out) throws IOException {
+                final Uuid conversationId = (Uuid.SERIALIZER).read(in);
+                final Uuid userId = (Uuid.SERIALIZER).read(in);
+                Serializers.INTEGER.write(out, NetworkCode.GET_ACCESS_LEVEL_RESPONSE);
+                final UserAccessLevel accessLevel = view.findUserAccessLevel(conversationId, userId);
+                Serializers.nullable(UserAccessLevel.SERIALIZER).write(out, accessLevel);
+            }
+        });
+
         // Remove Interest - A client wants to remove a interest
         this.commands.put(NetworkCode.REMOVE_INTERESTS_REQUEST,  new Command() {
             @Override

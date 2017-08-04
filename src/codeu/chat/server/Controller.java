@@ -15,6 +15,7 @@
 package codeu.chat.server;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import codeu.chat.common.AccessLevel;
 import codeu.chat.common.BasicController;
@@ -163,6 +164,20 @@ public final class Controller implements RawController, BasicController {
     }
 
     return userAccess;
+  }
+
+  @Override
+  public UserAccessLevel getUserAccessLevel(Uuid conversationId, Uuid userId) {
+    Collection<UserAccessLevel> accessLevels = model.accessLevelsByConvId().first(conversationId);
+    Iterator<UserAccessLevel> iterator = accessLevels.iterator();
+    UserAccessLevel current;
+
+    while(iterator.hasNext()) {
+      current = iterator.next();
+      if (current.getUser().equals(userId))
+        return current;
+    }
+    return null;
   }
 
   @Override

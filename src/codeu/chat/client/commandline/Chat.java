@@ -15,9 +15,10 @@
 package codeu.chat.client.commandline;
 
 import codeu.chat.client.core.*;
+import codeu.chat.common.AccessLevel;
 import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.ServerInfo;
-import codeu.chat.common.AccessLevel;
+import codeu.chat.common.UserAccessLevel;
 import codeu.chat.util.Time;
 import codeu.chat.util.Tokenizer;
 import codeu.chat.util.Uuid;
@@ -522,14 +523,15 @@ public final class Chat {
       public void invoke(List<String> args) {
         try {
           final Uuid id = args.size() > 0 ? Uuid.parse(args.get(0)) : Uuid.NULL;
-          if (args.size() > 0) {
+          final AccessLevel accesslevel = conversation.getUserAccessLevel().getAccessLevel();
+          if (args.size() > 0 && (accesslevel == AccessLevel.OWNER || accesslevel == AccessLevel.CREATOR)) {
             if (id == null) {
               System.out.println("ERROR: Failed to make user have no access level");
             } else {
               conversation.addUserAccessLevel(id, AccessLevel.NONE);
             }
           } else {
-            System.out.println("ERROR: Missing <userid>");
+            System.out.println("ERROR: Missing <userid> or you don't have the access level required");
           }
         } catch (Exception e) {
           e.printStackTrace();
@@ -546,7 +548,8 @@ public final class Chat {
       public void invoke(List<String> args) {
         try {
           final Uuid id = args.size() > 0 ? Uuid.parse(args.get(0)) : Uuid.NULL;
-          if (args.size() > 0) {
+          final AccessLevel accesslevel = conversation.getUserAccessLevel().getAccessLevel();
+          if (args.size() > 0 && (accesslevel == AccessLevel.OWNER || accesslevel == AccessLevel.CREATOR)) {
             if (id == null) {
               System.out.println("ERROR: Failed to make user a member");
             } else {
@@ -570,7 +573,8 @@ public final class Chat {
       public void invoke(List<String> args) {
         try {
           final Uuid id = args.size() > 0 ? Uuid.parse(args.get(0)) : Uuid.NULL;
-          if (args.size() > 0) {
+          final AccessLevel accesslevel = conversation.getUserAccessLevel().getAccessLevel();
+          if (args.size() > 0 && (accesslevel == AccessLevel.OWNER || accesslevel == AccessLevel.CREATOR)) {
             if (id == null) {
               System.out.println("ERROR: Failed to make user an owner");
             } else {

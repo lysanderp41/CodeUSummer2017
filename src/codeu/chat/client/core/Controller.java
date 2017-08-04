@@ -138,6 +138,28 @@ final class Controller implements BasicController {
   }
 
   @Override
+  public UserAccessLevel getUserAccessLevel(Uuid conversationId, Uuid userId) {
+
+      UserAccessLevel response = null;
+
+      try (final Connection connection = source.connect()) {
+        Serializers.INTEGER.write(connection.out(), NetworkCode.GET_ACCESS_LEVEL_REQUEST);
+        Uuid.SERIALIZER.write(connection.out(), conversationId);
+        Uuid.SERIALIZER.write(connection.out(), userId);
+
+        if (Serializers.INTEGER.read(connection.in()) == NetworkCode.GET_ACCESS_LEVEL_RESPONSE) {
+          response = Serializers.nullable(UserAccessLevel.SERIALIZER).read(connection.in());
+        } else {
+          LOG.error("Response from server failed.");
+        }
+      } catch (Exception ex) {
+        System.out.println("ERROR: Exception during call on server. Check log for details.");
+        LOG.error(ex, "Exception during call on server.");
+      }
+      return response;
+  }
+
+  @Override
   public Interests newInterest(Uuid userid, Uuid interests) {
 
     Interests response = null;
