@@ -157,8 +157,8 @@ public final class Controller implements RawController, BasicController {
     final User foundUser = model.userById().first(userId);
     UserAccessLevel userAccess = null;
     if(foundUser != null) {
-      model.add(conversationId, userAccess);
       userAccess = new UserAccessLevel (userId, accessLevel);
+      model.add(conversationId, userAccess);
       LOG.info("AccessLevel " + accessLevel + " added to user " + userId);
     }
 
