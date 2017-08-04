@@ -91,6 +91,31 @@ final class Controller implements BasicController {
   }
 
   @Override
+  public ConversationHeader newConversation(String title, Uuid owner, AccessLevel defaultAccessLevel)  {
+
+    ConversationHeader response = null;
+
+    try (final Connection connection = source.connect()) {
+
+      Serializers.INTEGER.write(connection.out(), NetworkCode.NEW_CONVERSATION_REQUEST);
+      Serializers.STRING.write(connection.out(), title);
+      Uuid.SERIALIZER.write(connection.out(), owner);
+      Serializers.STRING.write(connection.out(), defaultAccessLevel.toString());
+
+      if (Serializers.INTEGER.read(connection.in()) == NetworkCode.NEW_CONVERSATION_RESPONSE) {
+        response = Serializers.nullable(ConversationHeader.SERIALIZER).read(connection.in());
+      } else {
+        LOG.error("Response from server failed.");
+      }
+    } catch (Exception ex) {
+      System.out.println("ERROR: Exception during call on server. Check log for details.");
+      LOG.error(ex, "Exception during call on server.");
+    }
+
+    return response;
+  }
+
+  @Override
   public ConversationHeader newConversation(String title, Uuid owner)  {
 
     ConversationHeader response = null;
@@ -157,6 +182,27 @@ final class Controller implements BasicController {
         LOG.error(ex, "Exception during call on server.");
       }
       return response;
+  }
+
+  @Override
+  public AccessLevel setDefaultAccessLevel(Uuid conversation, AccessLevel defaultAccessLevel) {
+
+    AccessLevel response = null;
+
+    try (final Connection connection = source.connect()) {
+      Serializers.INTEGER.write(connection.out(), NetworkCode.SET_DEFAULT_ACCESS_LEVEL_REQUEST);
+      Uuid.SERIALIZER.write(connection.out(),conversation);
+      Serializers.STRING.write(connection.out(), defaultAccessLevel.toString());
+
+      if (Serializers.INTEGER.read(connection.in()) == NetworkCode.SET_DEFAULT_ACCESS_LEVEL_RESPONSE) {
+        response = AccessLevel.valueOf(Serializers.STRING.read(connection.in()));
+      } else {
+        LOG.error("Response from server failed.");
+      }
+    } catch (Exception ex) {
+      LOG.error("Response from server failed.");
+    }
+    return response;
   }
 
   @Override

@@ -89,6 +89,10 @@ public final class ConversationContext {
     return controller.getUserAccessLevel(conversation.id, user.id);
   }
 
+  public void setDefaultAccessLevel(AccessLevel defaultAccessLevel) {
+    controller.setDefaultAccessLevel(conversation.id, defaultAccessLevel);
+  }
+
   private ConversationPayload getUpdated() {
     final Collection<Uuid> ids = Arrays.asList(conversation.id);
     final Iterator<ConversationPayload> payloads = view.getConversationPayloads(ids).iterator();

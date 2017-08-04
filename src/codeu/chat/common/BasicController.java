@@ -50,6 +50,8 @@ public interface BasicController {
   //  operation is successful, a Conversation object will be returned
   //  representing the full state of the conversation on the server.
   //  Whether conversations can have the same title is undefined.
+  ConversationHeader newConversation(String title, Uuid owner, AccessLevel defaultAccessLevel);
+
   ConversationHeader newConversation(String title, Uuid owner);
 
   // NEW INTEREST
@@ -77,4 +79,6 @@ public interface BasicController {
   UserAccessLevel newUserAccessLevel(Uuid conversationId, Uuid userId, AccessLevel accessLevel);
 
   UserAccessLevel getUserAccessLevel(Uuid conversationId, Uuid userId);
+
+  AccessLevel setDefaultAccessLevel(Uuid conversationId, AccessLevel defaultAccessLevel);
 }

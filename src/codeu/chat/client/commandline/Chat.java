@@ -459,6 +459,8 @@ public final class Chat {
         System.out.println("    List all messages in the current conversation.");
         System.out.println("  m-add <message>");
         System.out.println("    Add a new message to the current conversation as the current user.");
+        System.out.println("  set-default <access level>");
+        System.out.println("    Set a new default access level for new users (creator only)");
         System.out.println("  n-make <userid>");
         System.out.println("    Make the user have no access level in the conversation.");
         System.out.println("  mem-make <userid>");
@@ -510,6 +512,19 @@ public final class Chat {
           conversation.add(message);
         } else {
           System.out.println("ERROR: Messages must contain text");
+        }
+      }
+    });
+
+    panel.register("set-default", new Panel.Command() {
+      @Override
+      public void invoke(List<String> args) {
+        final String accessLevel = args.size() > 0 ? args.get(0) : "";
+        if (accessLevel.length() > 0 && conversation.user.id.equals(conversation.conversation.owner)) {
+          AccessLevel defaultAccessLevel = AccessLevel.valueOf(accessLevel);
+          conversation.setDefaultAccessLevel(defaultAccessLevel);
+        } else {
+          System.out.println("ERROR: Must set a valid access level, or you do not have the necessary permissions");
         }
       }
     });

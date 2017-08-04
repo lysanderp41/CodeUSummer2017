@@ -22,11 +22,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import codeu.chat.client.core.View;
-import codeu.chat.common.BasicController;
-import codeu.chat.common.BasicView;
-import codeu.chat.common.ConversationHeader;
-import codeu.chat.common.Interests;
-import codeu.chat.common.User;
+import codeu.chat.common.*;
 import codeu.chat.util.Time;
 import codeu.chat.util.Uuid;
 
