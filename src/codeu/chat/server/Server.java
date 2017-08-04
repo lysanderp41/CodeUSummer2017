@@ -202,19 +202,6 @@ public final class Server {
             }
         });
 
-        // Get UserAccessLevel By Id - A client wants to get his/her UserAccessLevel of the conversation the from the back end.
-        this.commands.put(NetworkCode.GET_USERACCESSLEVEL_REQUEST, new Command() {
-            @Override
-            public void onMessage(InputStream in, OutputStream out) throws IOException {
-
-                final Collection<Uuid> ids = Serializers.collection(Uuid.SERIALIZER).read(in);
-                final Collection<Message> userAccessLevel = view.getUserAccessLevel(ids);
-
-                Serializers.INTEGER.write(out, NetworkCode.GET_USERACCESSLEVEL_RESPONSE);
-                Serializers.collection(UserAccessLevel.SERIALIZER).write(out, userAccessLevel);
-            }
-        });
-
         //Gets the Server information
         this.commands.put(NetworkCode.SERVER_VERSION_REQUEST, new Command() {
             @Override

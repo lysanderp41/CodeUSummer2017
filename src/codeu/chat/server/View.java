@@ -81,9 +81,6 @@ public final class View implements BasicView, SinglesView {
   }
 
   @Override
-  public Collection<UserAccessLevel> getUserAccessLevel(){ return all(model.accessLevelsByConvId());}
-
-  @Override
   public User findUser(Uuid id) { return model.userById().first(id); }
 
   @Override
