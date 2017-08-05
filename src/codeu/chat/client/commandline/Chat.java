@@ -300,6 +300,7 @@ public final class Chat {
             System.out.println("ERROR: Failed to create new conversation");
           } else {
             panels.push(createConversationPanel(conversation));
+            user.createConversation(conversation.conversation.id);
           }
         } else {
           System.out.println("ERROR: Missing <title>");

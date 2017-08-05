@@ -88,4 +88,8 @@ public final class UserContext {
       controller.newUserAccessLevel(conversationId, user.id, defaultAccessLevel);
     }
   }
+
+  public void createConversation(Uuid conversationId) {
+    controller.newUserAccessLevel(conversationId, user.id, AccessLevel.CREATOR);
+  }
 }
