@@ -484,18 +484,23 @@ public final class Chat {
     panel.register("m-list", new Panel.Command() {
       @Override
       public void invoke(List<String> args) {
-        System.out.println("--- start of conversation ---");
-        for (MessageContext message = conversation.firstMessage();
-                            message != null;
-                            message = message.next()) {
-          System.out.println();
-          System.out.format("USER : %s\n", message.message.author);
-          System.out.format("SENT : %s\n", message.message.creation);
-          System.out.println();
-          System.out.println(message.message.content);
-          System.out.println();
+        final AccessLevel accesslevel = conversation.getUserAccessLevel().getAccessLevel();
+        if (accesslevel == AccessLevel.NONE ) {
+          System.out.println("ERROR: You do not have the valid access level to view Messages");
+        } else {
+          System.out.println("--- start of conversation ---");
+          for (MessageContext message = conversation.firstMessage();
+               message != null;
+               message = message.next()) {
+            System.out.println();
+            System.out.format("USER : %s\n", message.message.author);
+            System.out.format("SENT : %s\n", message.message.creation);
+            System.out.println();
+            System.out.println(message.message.content);
+            System.out.println();
+          }
+          System.out.println("---  end of conversation  ---");
         }
-        System.out.println("---  end of conversation  ---");
       }
     });
 
@@ -507,11 +512,16 @@ public final class Chat {
     panel.register("m-add", new Panel.Command() {
       @Override
       public void invoke(List<String> args) {
-        final String message = args.size() > 0 ? args.get(0) : "";
-        if (message.length() > 0) {
-          conversation.add(message);
+        final AccessLevel accesslevel = conversation.getUserAccessLevel().getAccessLevel();
+        if (accesslevel == AccessLevel.NONE ) {
+          System.out.println("ERROR: You do not have the valid access level to add Messages");
         } else {
-          System.out.println("ERROR: Messages must contain text");
+          final String message = args.size() > 0 ? args.get(0) : "";
+          if (message.length() > 0) {
+            conversation.add(message);
+          } else {
+            System.out.println("ERROR: Messages must contain text");
+          }
         }
       }
     });
@@ -615,7 +625,8 @@ public final class Chat {
         System.out.println("Conversation Info:");
         System.out.format("  Title : %s\n", conversation.conversation.title);
         System.out.format("  Id    : UUID:%s\n", conversation.conversation.id);
-        System.out.format("  Owner : %s\n", conversation.conversation.owner);
+        System.out.format("  Creator  : %s\n", conversation.conversation.owner);
+        System.out.format("  Access Level: %s\n", conversation.getUserAccessLevel().getAccessLevel());
       }
     });
 
