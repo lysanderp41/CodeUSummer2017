@@ -80,4 +80,12 @@ public final class UserContext {
    HashMap<Uuid, Integer> interestedConversations) {
     ((View)view).getStatusUpdate(user.id, interestedUsers, interestedConversations);
   }
+
+  public void joinConversation(Uuid conversationId) {
+    final UserAccessLevel userAccessLevel = controller.getUserAccessLevel(conversationId, user.id);
+    if (userAccessLevel == null) {
+      final AccessLevel defaultAccessLevel = view.getDefaultAccessLevel(conversationId);
+      controller.newUserAccessLevel(conversationId, user.id, defaultAccessLevel);
+    }
+  }
 }

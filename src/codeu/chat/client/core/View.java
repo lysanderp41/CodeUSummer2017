@@ -159,6 +159,26 @@ final class View implements BasicView {
   }
 
   @Override
+  public AccessLevel getDefaultAccessLevel(Uuid conversationId) {
+    AccessLevel response = null;
+
+    try (final Connection connection = source.connect()) {
+
+      Serializers.INTEGER.write(connection.out(), NetworkCode.GET_DEFAULT_ACCESS_LEVEL_REQUEST);
+      Uuid.SERIALIZER.write(connection.out(), conversationId);
+
+      if (Serializers.INTEGER.read(connection.in()) == NetworkCode.GET_DEFAULT_ACCESS_LEVEL_RESPONSE) {
+        response = AccessLevel.valueOf(Serializers.STRING.read(connection.in()));
+      }
+    } catch (Exception ex) {
+      System.out.println("ERROR: Exception during call on server. Check log for details.");
+      LOG.error(ex, "Exception during call on server.");
+    }
+
+    return response;
+  }
+
+  @Override
   public Collection<Message> getMessages(Collection<Uuid> ids) {
 
     final Collection<Message> messages = new ArrayList<>();

@@ -106,6 +106,14 @@ public final class View implements BasicView, SinglesView {
     return null;
   }
 
+  @Override
+  public AccessLevel getDefaultAccessLevel(Uuid conversationId) {
+    if (model.defaultAccessLevelsByConvId().first(conversationId) != null) {
+      return model.defaultAccessLevelsByConvId().first(conversationId).getAccessLevel();
+    }
+    return null;
+  }
+
   private static <S,T> Collection<T> all(StoreAccessor<S,T> store) {
 
     final Collection<T> all = new ArrayList<>();
