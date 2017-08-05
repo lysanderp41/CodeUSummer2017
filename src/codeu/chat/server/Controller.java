@@ -15,7 +15,9 @@
 package codeu.chat.server;
 
 import java.util.Collection;
+import java.util.Iterator;
 
+import codeu.chat.common.AccessLevel;
 import codeu.chat.common.BasicController;
 import codeu.chat.common.ConversationHeader;
 import codeu.chat.common.ConversationPayload;
@@ -24,6 +26,7 @@ import codeu.chat.common.Message;
 import codeu.chat.common.RandomUuidGenerator;
 import codeu.chat.common.RawController;
 import codeu.chat.common.User;
+import codeu.chat.common.UserAccessLevel;
 import codeu.chat.util.Logger;
 import codeu.chat.util.Time;
 import codeu.chat.util.Uuid;
@@ -48,6 +51,11 @@ public final class Controller implements RawController, BasicController {
   @Override
   public User newUser(String name) {
     return newUser(createId(), name, Time.now());
+  }
+
+  @Override
+  public ConversationHeader newConversation(String title, Uuid owner, AccessLevel defaultAccessLevel) {
+    return newConversation(createId(), title, owner, Time.now(), defaultAccessLevel);
   }
 
   @Override
@@ -134,6 +142,22 @@ public final class Controller implements RawController, BasicController {
   }
 
   @Override
+  public ConversationHeader newConversation(Uuid id, String title, Uuid owner, Time creationTime, AccessLevel defaultAccessLevel) {
+
+    final User foundOwner = model.userById().first(owner);
+
+    ConversationHeader conversation = null;
+
+    if (foundOwner != null && isIdFree(id)) {
+      conversation = new ConversationHeader(id, owner, creationTime, title);
+      model.add(conversation, defaultAccessLevel);
+      LOG.info("Conversation added: " + id);
+    }
+
+    return conversation;
+  }
+
+  @Override
   public ConversationHeader newConversation(Uuid id, String title, Uuid owner, Time creationTime) {
 
     final User foundOwner = model.userById().first(owner);
@@ -147,6 +171,45 @@ public final class Controller implements RawController, BasicController {
     }
 
     return conversation;
+  }
+
+  @Override
+  public UserAccessLevel newUserAccessLevel(Uuid conversationId, Uuid userId, AccessLevel accessLevel) {
+
+    final User foundUser = model.userById().first(userId);
+    UserAccessLevel userAccess = null;
+    if(foundUser != null) {
+      userAccess = new UserAccessLevel (userId, accessLevel);
+      model.add(conversationId, userAccess);
+      LOG.info("AccessLevel " + accessLevel + " added to user " + userId);
+    }
+
+    return userAccess;
+  }
+
+  @Override
+  public UserAccessLevel getUserAccessLevel(Uuid conversationId, Uuid userId) {
+    Collection<UserAccessLevel> accessLevels = model.accessLevelsByConvId().first(conversationId);
+    Iterator<UserAccessLevel> iterator = accessLevels.iterator();
+    UserAccessLevel current;
+
+    while(iterator.hasNext()) {
+      current = iterator.next();
+      if (current.getUser().equals(userId))
+        return current;
+    }
+    return null;
+  }
+
+  @Override
+  public AccessLevel setDefaultAccessLevel(Uuid conversationId, AccessLevel defaultAccessLevel) {
+    final ConversationHeader foundConversation = model.conversationById().first(conversationId);
+
+    if (foundConversation != null) {
+      LOG.info("AccessLevel " + defaultAccessLevel + " set to conversation " + conversationId);
+      return model.setDefaultAccessLevel(conversationId, defaultAccessLevel);
+    }
+    return null;
   }
 
   @Override
