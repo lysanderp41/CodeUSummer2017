@@ -217,9 +217,9 @@ public final class Chat {
       }
     });
 
-    // Version Check 
+    // Version Check
     //
-    // adds a new command "version" and will display the version it is in 
+    // adds a new command "version" and will display the version it is in
     //
     panel.register("version", new Panel.Command() {
       @Override
@@ -301,6 +301,7 @@ public final class Chat {
           } else {
             panels.push(createConversationPanel(conversation));
             user.createConversation(conversation.conversation.id);
+            conversation.setDefaultAccessLevel(AccessLevel.NONE);
           }
         } else {
           System.out.println("ERROR: Missing <title>");
