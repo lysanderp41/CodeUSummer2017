@@ -49,4 +49,9 @@ public interface SinglesView {
   // Find the interests for the user with the given id.
   Interests findInterests(Uuid userid);
 
+  // FIND USER ACCESS LEVEL
+  //
+  // Find the access level whose id matches the given id in the given conversation id. if no
+  // UserAccessLevel matches the given id, null will be returned.
+  UserAccessLevel findUserAccessLevel(Uuid conversationId, Uuid user);
 }
