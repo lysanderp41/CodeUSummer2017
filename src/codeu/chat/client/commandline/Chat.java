@@ -300,6 +300,7 @@ public final class Chat {
             System.out.println("ERROR: Failed to create new conversation");
           } else {
             panels.push(createConversationPanel(conversation));
+            user.createConversation(conversation.conversation.id);
           }
         } else {
           System.out.println("ERROR: Missing <title>");
@@ -370,6 +371,7 @@ public final class Chat {
             System.out.format("ERROR: No conversation with name '%s'\n", name);
           } else {
             panels.push(createConversationPanel(conversation));
+            user.joinConversation(conversation.conversation.id);
           }
         } else {
           System.out.println("ERROR: Missing <title>");
@@ -581,7 +583,7 @@ public final class Chat {
               conversation.addUserAccessLevel(id, AccessLevel.MEMBER);
             }
           } else {
-            System.out.println("ERROR: Missing <userid>");
+            System.out.println("ERROR: Missing <userid> or missing necessary permissions");
           }
         } catch (Exception e) {
           e.printStackTrace();

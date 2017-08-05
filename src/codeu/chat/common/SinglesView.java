@@ -53,5 +53,5 @@ public interface SinglesView {
   //
   // Find the access level whose id matches the given id in the given conversation id. if no
   // UserAccessLevel matches the given id, null will be returned.
-  UserAccessLevel findUserAccessLevel(Uuid conversation, Uuid user);
+  UserAccessLevel findUserAccessLevel(Uuid conversationId, Uuid user);
 }

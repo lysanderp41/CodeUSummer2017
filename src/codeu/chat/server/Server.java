@@ -272,6 +272,16 @@ public final class Server {
             }
         });
 
+        this.commands.put(NetworkCode.GET_DEFAULT_ACCESS_LEVEL_REQUEST, new Command() {
+            @Override
+            public void onMessage(InputStream in, OutputStream out) throws IOException {
+                final Uuid conversationId = Uuid.SERIALIZER.read(in);
+                Serializers.INTEGER.write(out, NetworkCode.GET_DEFAULT_ACCESS_LEVEL_RESPONSE);
+                final AccessLevel defaultAccessLevel = view.getDefaultAccessLevel(conversationId);
+                Serializers.STRING.write(out, defaultAccessLevel.toString());
+            }
+        });
+
         // Remove Interest - A client wants to remove a interest
         this.commands.put(NetworkCode.REMOVE_INTERESTS_REQUEST,  new Command() {
             @Override

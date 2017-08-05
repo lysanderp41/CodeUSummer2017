@@ -64,4 +64,9 @@ public interface BasicView {
   //   Returns all the interests
   Collection<UserAccessLevel> getAccessLevels(Uuid conversation);
 
+
+  // FIND DEFAULT ACCESS LEVEL
+  //
+  // Find the default access level that matches the given conversation
+  AccessLevel getDefaultAccessLevel(Uuid conversationId);
 }
