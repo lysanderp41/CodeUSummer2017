@@ -233,7 +233,7 @@ public final class Server {
             Serializers.nullable(UserAccessLevel.SERIALIZER).write(out, userAccess);
 
 //fix
-            logQueue.getTransactions().add("User Access Level" + userId.toString() + " " );
+            logQueue.getTransactions().add("User Access Level: " + userId.toString() + " " + accessLevel.toString() + " " );
           }
         });
 
