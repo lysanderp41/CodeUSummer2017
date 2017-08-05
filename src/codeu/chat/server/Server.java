@@ -267,6 +267,8 @@ public final class Server {
 
                 Serializers.INTEGER.write(out, NetworkCode.SET_DEFAULT_ACCESS_LEVEL_RESPONSE);
                 Serializers.STRING.write(out, returnedAccessLevel.toString());
+
+                logQueue.getTransactions().add("SET-DEFAULT " + conversationId.toString() + " " + defaultAccessLevel.toString() + " ");
             }
         });
 
@@ -497,6 +499,10 @@ public final class Server {
                     long timeInMs = Long.parseLong(tokenizer.next());
                     Time timeCreated = Time.fromMs(timeInMs);
                     view.findInterests(userId).lastStatusUpdate = timeCreated;
+                } else if(action.equals("SET-DEFAULT-ACCESS-LEVEL")) {
+                   Uuid conversation = Uuid.parse(tokenizer.next());
+                   AccessLevel defaultAccessLevel = AccessLevel.valueOf(tokenizer.next());
+                   controller.setDefaultAccessLevel(conversation, defaultAccessLevel);
                 }
             }
         } catch (Exception e) {
